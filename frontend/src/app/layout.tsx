@@ -14,6 +14,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
+import { AuthProvider } from '../context/AuthContext';
+
 export default function RootLayout({
   children,
 }: {
@@ -22,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B0E14] text-slate-900 dark:text-slate-100 antialiased selection:bg-[#FF5E3A] selection:text-white transition-colors duration-300">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
