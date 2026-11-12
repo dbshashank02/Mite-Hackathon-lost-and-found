@@ -1,0 +1,21 @@
+{
+  "name": "FindIt Campus — Next-Gen AI Lost & Found",
+  "short_name": "FindIt Campus",
+  "description": "Campus-wide intelligent lost and found network with multimodal vision matching and contactless QR handover",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0E14",
+  "theme_color": "#FF5E3A",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
