@@ -148,13 +148,14 @@ export default function LoginPage() {
       {/* Top Header */}
       <header className="w-full h-14 apple-header px-4 sm:px-8 flex items-center justify-between border-b border-hairline">
         <div className="max-w-6xl w-full mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-5 h-5 rounded-full bg-[#FF4A36] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <span className="w-2 h-2 rounded-full bg-white" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-hairline flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+              <img src="/logo-icon.png" alt="MITERetrieve Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center">
               <span>MITE</span>
               <span className="text-[#FF4A36]">Retrieve</span>
+              <span className="text-slate-400 font-normal text-xs ml-0.5">.com</span>
             </span>
           </Link>
 
@@ -168,9 +169,20 @@ export default function LoginPage() {
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left Intro Column (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4A36]/10 border border-[#FF4A36]/20 text-xs font-semibold text-[#FF4A36]">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>MITERetrieve &middot; Campus Recovery</span>
+          <div className="flex items-center gap-3.5">
+            <div className="w-16 h-16 rounded-2xl bg-white p-2 shadow-md border border-hairline flex items-center justify-center flex-shrink-0">
+              <img src="/logo-icon.png" alt="MITERetrieve Logo" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF4A36]/10 border border-[#FF4A36]/20 text-[11px] font-semibold text-[#FF4A36]">
+                <Sparkles className="w-3 h-3" />
+                <span>Official MITE Recovery System</span>
+              </div>
+              <div className="text-base font-bold text-slate-800 dark:text-slate-100 mt-0.5 flex items-center">
+                <span>MITERetrieve</span>
+                <span className="text-[#FF4A36]">.com</span>
+              </div>
+            </div>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.08]">

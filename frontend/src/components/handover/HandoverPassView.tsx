@@ -151,9 +151,11 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
         <div className="relative rounded-[28px] bg-[#1E1F30] border border-[#2F314C] p-6 sm:p-8 flex flex-col items-center text-center shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center gap-2 mb-3">
-            <ShieldCheck className="w-4 h-4 text-[#00D084]" />
+            <div className="w-6 h-6 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-white/20 flex items-center justify-center flex-shrink-0">
+              <img src="/logo-icon.png" alt="MITERetrieve" className="w-full h-full object-contain" />
+            </div>
             <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-[#00D084]">
-              CAMPUS SECURITY GATEPASS
+              MITE CAMPUS GATEPASS
             </span>
           </div>
 

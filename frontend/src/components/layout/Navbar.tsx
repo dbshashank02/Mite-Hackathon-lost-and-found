@@ -26,9 +26,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Apple Wordmark + Live Telemetry Status Pulse */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-hairline flex items-center justify-center flex-shrink-0">
+              <img src="/logo-icon.png" alt="MITERetrieve Logo" className="w-full h-full object-contain" />
+            </div>
             <span className="font-semibold text-sm tracking-tight text-slate-900 dark:text-white flex items-center">
               <span>MITE</span>
               <span className="text-[#FF4A36]">Retrieve</span>
+              <span className="text-slate-400 font-normal text-xs ml-0.5">.com</span>
             </span>
           </div>
 

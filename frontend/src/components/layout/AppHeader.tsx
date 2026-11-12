@@ -28,13 +28,14 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
         {/* Left: Brand + Depot Status Pulse */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-5 h-5 rounded-full bg-[#FF4A36] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <span className="w-2 h-2 rounded-full bg-white" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-hairline flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+              <img src="/logo-icon.png" alt="MITERetrieve Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center">
               <span>MITE</span>
               <span className="text-[#FF4A36]">Retrieve</span>
+              <span className="text-slate-400 font-normal text-xs ml-0.5">.com</span>
             </span>
           </Link>
 
