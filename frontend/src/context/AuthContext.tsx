@@ -114,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('findit_user');
       localStorage.removeItem('findit_token');
     } catch (e) {}
-    router.push('/login');
+    router.push('/');
   };
 
   return (

@@ -103,7 +103,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             </>
           ) : (
             <Link
-              href="/login"
+              href="/"
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-apple-pill bg-apple-blue hover:bg-apple-blue/90 text-white text-xs font-semibold shadow-sm transition-all"
             >
               <UserIcon className="w-3.5 h-3.5" />
