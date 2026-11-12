@@ -58,6 +58,7 @@ export default function FinderDashboard() {
   // Generated Drop-Off Pass State
   const [depositPass, setDepositPass] = useState<{
     code: string;
+    itemId?: string;
     itemTitle: string;
     depotLocation: string;
     lockerId: string;
@@ -65,6 +66,7 @@ export default function FinderDashboard() {
     status: 'GENERATED' | 'UNLOCKED' | 'DEPOSITED';
   } | null>({
     code: 'DEPOT-DROP-8492',
+    itemId: 'item_fnd_002',
     itemTitle: 'Apple AirPods Pro Gen 2',
     depotLocation: 'Student Union Smart Vault Depot (Ground Floor Bay 2)',
     lockerId: 'L-14',
@@ -72,11 +74,24 @@ export default function FinderDashboard() {
     status: 'GENERATED',
   });
 
+  const [karmaScore, setKarmaScore] = useState(1420);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageUrl(reader.result as string);
+        showToast('Device photo loaded into AI optical stream!');
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const refreshData = async () => {
@@ -136,6 +151,7 @@ export default function FinderDashboard() {
       const generatedCode = 'DEPOT-DROP-' + Math.floor(1000 + Math.random() * 9000);
       setDepositPass({
         code: generatedCode,
+        itemId: newItem.item.id,
         itemTitle: newItem.item.title,
         depotLocation: `${bld.name} Smart Vault Depot`,
         lockerId: `L-${Math.floor(1 + Math.random() * 40).toString().padStart(2, '0')}`,
@@ -154,6 +170,17 @@ export default function FinderDashboard() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleUnlockAndDeposit = async () => {
+    if (!depositPass) return;
+    setDepositPass({ ...depositPass, status: 'DEPOSITED' });
+    setKarmaScore((prev) => prev + 150);
+    if (depositPass.itemId) {
+      await api.updateItemStatus(depositPass.itemId, 'LOGGED_IN_DEPOT', depositPass.lockerId, 'FINDER');
+      await refreshData();
+    }
+    showToast(`Locker ${depositPass.lockerId} locked! +150 Samaritan Karma points credited.`);
   };
 
   const myLoggedItems = items.filter(
@@ -193,7 +220,7 @@ export default function FinderDashboard() {
               <div>
                 <div className="text-[10px] font-mono uppercase text-slate-400">Impact Score</div>
                 <div className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>1,420 Karma</span>
+                  <span>{karmaScore.toLocaleString()} Karma</span>
                   <span className="text-[10px] font-mono text-telemetry-emerald bg-telemetry-emerald/10 px-1.5 py-0.5 rounded-apple-pill">
                     Tier 3 Samaritan
                   </span>
@@ -304,10 +331,15 @@ export default function FinderDashboard() {
                 </button>
               </div>
 
-              {/* Sample Photo Swatches */}
+              {/* Sample Photo Swatches & Upload */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                <label className="px-2.5 py-1 rounded-apple-pill text-[10px] font-mono border border-telemetry-emerald/40 bg-telemetry-emerald/10 text-telemetry-emerald hover:bg-telemetry-emerald/20 transition-all cursor-pointer flex-shrink-0 flex items-center gap-1 font-bold">
+                  <Upload className="w-3 h-3" />
+                  <span>Upload</span>
+                  <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                </label>
                 <span className="text-[10px] font-mono uppercase text-slate-500 flex-shrink-0">
-                  Sample Snaps:
+                  Samples:
                 </span>
                 {[
                   { label: 'AirPods', url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&auto=format&fit=crop&q=80' },
@@ -502,10 +534,7 @@ export default function FinderDashboard() {
                   <div className="pt-2">
                     <button
                       type="button"
-                      onClick={() => {
-                        setDepositPass({ ...depositPass, status: 'DEPOSITED' });
-                        showToast(`Locker ${depositPass.lockerId} unlocked & item deposited into vault!`);
-                      }}
+                      onClick={handleUnlockAndDeposit}
                       disabled={depositPass.status === 'DEPOSITED'}
                       className={`w-full py-3 rounded-apple-pill font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
                         depositPass.status === 'DEPOSITED'

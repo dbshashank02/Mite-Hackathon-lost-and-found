@@ -9,6 +9,7 @@ import {
   HotspotZone,
   ItemCategory,
   ItemType,
+  ItemStatus,
   ClaimStatus,
 } from '../types';
 import {
@@ -64,14 +65,20 @@ async function apiRequest<T>(
   const url = `${BACKEND_URL}${endpoint}`;
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1800); // Fast timeout for immediate fallback
+    const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+    let authToken = `Bearer mock_jwt_token_${role.toLowerCase()}`;
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('findit_token');
+      if (storedToken) authToken = `Bearer ${storedToken}`;
+    }
 
     const response = await fetch(url, {
       ...options,
       signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer mock_jwt_token_${role.toLowerCase()}`,
+        Authorization: authToken,
         'x-demo-role': role,
         ...(options.headers || {}),
       },
@@ -84,8 +91,6 @@ async function apiRequest<T>(
 
     return (await response.json()) as T;
   } catch (err) {
-    // Graceful offline fallback
-    // console.warn(`[FindIt API] Backend unreachable at ${url}. Using high-fidelity mock fallback.`);
     return await fallbackResolver();
   }
 }
@@ -257,6 +262,20 @@ export const api = {
       },
       role
     );
+  },
+
+  async updateItemStatus(
+    itemId: string,
+    status: ItemStatus,
+    lockerId?: string,
+    role: UserRole = 'ADMIN'
+  ): Promise<Item> {
+    const item = localItems.find((i) => i.id === itemId);
+    if (item) {
+      item.status = status;
+      if (lockerId !== undefined) item.lockerId = lockerId;
+    }
+    return item || localItems[0];
   },
 
   // Claims

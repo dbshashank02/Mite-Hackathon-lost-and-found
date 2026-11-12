@@ -49,6 +49,13 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
   onSearchChange,
 }) => {
   const [viewMode, setViewMode] = useState<'BENTO' | '3D'>('BENTO');
+  const [nearMeOnly, setNearMeOnly] = useState(false);
+
+  // Student baseline GPS coords on campus
+  const STUDENT_POS = { x: 450, y: 320 };
+  const displayItems = nearMeOnly
+    ? items.filter((i) => Math.hypot(i.coords.x - STUDENT_POS.x, i.coords.y - STUDENT_POS.y) <= 200)
+    : items;
 
   const categories: (ItemCategory | 'ALL')[] = [
     'ALL',
@@ -215,8 +222,25 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
           </div>
         </div>
 
-        {/* Category Filter Horizontal Pills */}
+        {/* Category Filter Horizontal Pills & Near-Me Radar */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            onClick={() => setNearMeOnly(!nearMeOnly)}
+            className={`px-3 py-1.5 rounded-apple-pill text-xs font-semibold whitespace-nowrap transition-all border flex items-center gap-1.5 ${
+              nearMeOnly
+                ? 'bg-telemetry-emerald text-black border-transparent shadow-sm font-bold'
+                : 'bg-white/5 text-slate-300 hover:text-white border-hairline'
+            }`}
+          >
+            <Radio className={`w-3.5 h-3.5 ${nearMeOnly ? 'animate-pulse text-black' : 'text-telemetry-emerald'}`} />
+            <span>Near Me (&lt;200m)</span>
+            {nearMeOnly && (
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-apple-pill bg-black/20">
+                {displayItems.length}
+              </span>
+            )}
+          </button>
+
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat;
             return (
@@ -239,7 +263,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
       {/* 3. Showcase Area: Bento Grid or 3D Showcase */}
       {viewMode === 'BENTO' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => (
+          {displayItems.map((item) => (
             <div
               key={item.id}
               onClick={() => onSelectItem(item)}
@@ -308,7 +332,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
         </div>
       ) : (
         <CardStackCarousel
-          items={items}
+          items={displayItems}
           onSelectItem={onSelectItem}
           onOpenMatch={onOpenMatch}
           userRole={userRole}

@@ -166,8 +166,21 @@ export default function SecurityDashboard() {
         message: res.message,
         item: res.item,
       });
+
+      // Automatically release and free the locker upon successful handover
+      const releasedLockerId = res.item?.lockerId;
+      if (releasedLockerId) {
+        setLockers((prev) =>
+          prev.map((l) =>
+            l.id === releasedLockerId || releasedLockerId.includes(l.id)
+              ? { ...l, status: 'AVAILABLE', itemTitle: undefined, itemId: undefined, claimId: undefined, assignedTo: undefined }
+              : l
+          )
+        );
+      }
+
       await refreshData();
-      showToast(`Verification SUCCESS! Item marked RETURNED.`);
+      showToast(`Verification SUCCESS! Item marked RETURNED & locker unlatched.`);
     } catch (err: any) {
       setScanResult({
         success: false,
@@ -179,22 +192,28 @@ export default function SecurityDashboard() {
     }
   };
 
-  // Quick Lock/Unlock Toggle for Visual Grid
-  const handleToggleLocker = (lockerId: string) => {
+  // Dedicated Locker Override Controller
+  const handleLockerAction = (lockerId: string, newStatus: VaultLocker['status'], note?: string) => {
     setLockers((prev) =>
       prev.map((l) => {
         if (l.id === lockerId) {
-          const nextStatus = l.status === 'AVAILABLE' ? 'OCCUPIED' : 'AVAILABLE';
-          showToast(`Locker ${l.id} manual override: ${nextStatus}`);
-          return {
+          const updated: VaultLocker = {
             ...l,
-            status: nextStatus,
-            itemTitle: nextStatus === 'OCCUPIED' ? 'Manual Vault Intake' : undefined,
+            status: newStatus,
+            itemTitle: newStatus === 'AVAILABLE' ? undefined : (note || l.itemTitle),
+            itemId: newStatus === 'AVAILABLE' ? undefined : l.itemId,
+            claimId: newStatus === 'AVAILABLE' ? undefined : l.claimId,
+            assignedTo: newStatus === 'AVAILABLE' ? undefined : l.assignedTo,
           };
+          if (selectedLocker?.id === lockerId) {
+            setSelectedLocker(updated);
+          }
+          return updated;
         }
         return l;
       })
     );
+    showToast(`Locker ${lockerId} status transitioned to ${newStatus}`);
   };
 
   const occupiedCount = lockers.filter((l) => l.status === 'OCCUPIED' || l.status === 'AWAITING_PICKUP').length;
@@ -463,10 +482,7 @@ export default function SecurityDashboard() {
                 return (
                   <div
                     key={locker.id}
-                    onClick={() => {
-                      setSelectedLocker(locker);
-                      handleToggleLocker(locker.id);
-                    }}
+                    onClick={() => setSelectedLocker(locker)}
                     className={`p-3 rounded-apple-lg border cursor-pointer transition-all flex flex-col justify-between aspect-square group relative ${
                       isAvail
                         ? 'bg-telemetry-emerald/5 hover:bg-telemetry-emerald/15 border-telemetry-emerald/20 text-telemetry-emerald'
@@ -564,6 +580,110 @@ export default function SecurityDashboard() {
           </div>
         )}
       </main>
+
+      {/* Smart Locker Detail Modal */}
+      {selectedLocker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-apple-2xl studio-surface border border-hairline p-6 space-y-5 shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-hairline">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-apple-md bg-tesla-amber/15 text-tesla-amber flex items-center justify-center font-mono font-bold text-xs">
+                  {selectedLocker.id}
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    Vault Bay {selectedLocker.id}
+                  </h3>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase">
+                    Magnetic Lock Controller
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setSelectedLocker(null)}
+                className="p-1 rounded-apple-pill hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Locker Status & Telemetry */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-apple-xl bg-black/[0.02] dark:bg-white/[0.03] border border-hairline">
+                <span className="text-xs text-slate-400 font-mono">Current Latch State</span>
+                <span
+                  className={`px-2.5 py-0.5 rounded-apple-pill text-[10px] font-mono font-bold uppercase ${
+                    selectedLocker.status === 'AVAILABLE'
+                      ? 'bg-telemetry-emerald/15 text-telemetry-emerald border border-telemetry-emerald/30'
+                      : selectedLocker.status === 'AWAITING_PICKUP'
+                      ? 'bg-tesla-amber/15 text-tesla-amber border border-tesla-amber/30'
+                      : selectedLocker.status === 'MAINTENANCE'
+                      ? 'bg-tesla-crimson/15 text-tesla-crimson border border-tesla-crimson/30'
+                      : 'bg-white/10 text-slate-300 border border-white/20'
+                  }`}
+                >
+                  {selectedLocker.status}
+                </span>
+              </div>
+
+              {selectedLocker.itemTitle ? (
+                <div className="p-3.5 rounded-apple-xl bg-black/[0.02] dark:bg-white/[0.03] border border-hairline space-y-2">
+                  <div className="text-[10px] font-mono text-slate-400 uppercase">
+                    Stored Item
+                  </div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">
+                    {selectedLocker.itemTitle}
+                  </div>
+                  {selectedLocker.assignedTo && (
+                    <div className="text-xs font-mono text-telemetry-emerald">
+                      Claimant: {selectedLocker.assignedTo}
+                    </div>
+                  )}
+                  {selectedLocker.claimId && (
+                    <div className="text-[11px] font-mono text-slate-400">
+                      Linked Claim: #{selectedLocker.claimId}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-4 rounded-apple-xl bg-black/[0.02] dark:bg-white/[0.03] border border-hairline text-center text-xs text-slate-500 font-mono">
+                  Bay is currently empty and unreserved. Ready for custody deposit.
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2 pt-2 border-t border-hairline">
+              <button
+                onClick={() => handleLockerAction(selectedLocker.id, 'AVAILABLE')}
+                className="w-full py-2.5 rounded-apple-pill bg-telemetry-emerald hover:bg-telemetry-emerald/90 text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Unlock className="w-3.5 h-3.5" />
+                <span>Manual Latch Release (Mark Available)</span>
+              </button>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => handleLockerAction(selectedLocker.id, 'OCCUPIED', 'Manual Vault Hold')}
+                  className="py-2 rounded-apple-pill bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-hairline text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all flex items-center justify-center gap-1.5"
+                >
+                  <Lock className="w-3 h-3" />
+                  <span>Force Occupied</span>
+                </button>
+
+                <button
+                  onClick={() => handleLockerAction(selectedLocker.id, 'MAINTENANCE')}
+                  className="py-2 rounded-apple-pill bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-hairline text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all flex items-center justify-center gap-1.5"
+                >
+                  <AlertTriangle className="w-3 h-3 text-tesla-crimson" />
+                  <span>Maintenance Lock</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating Toast */}
       {toastMessage && (

@@ -16,6 +16,7 @@ import { AppHeader } from '../../../components/layout/AppHeader';
 import { CustodyAnalyticsView } from '../../../components/analytics/CustodyAnalyticsView';
 import { CampusMapView } from '../../../components/map/CampusMapView';
 import { FeedbackModal } from '../../../components/feedback/FeedbackModal';
+import { ItemDetailModal } from '../../../components/discovery/ItemDetailModal';
 import {
   BarChart3,
   Flame,
@@ -50,6 +51,7 @@ export default function AdminDashboard() {
   const [hotspots, setHotspots] = useState<HotspotZone[]>([]);
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'HEATMAP' | 'LIFECYCLE_POLICIES' | 'AUDIT_LOGS'>('OVERVIEW');
 
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -86,8 +88,37 @@ export default function AdminDashboard() {
     showToast('Compliance audit CSV successfully downloaded');
   };
 
-  const handleTriggerDisposition = (dispositionType: 'DONATION' | 'AUCTION', count: number) => {
-    showToast(`Dispatched ${count} expired inventory units to campus ${dispositionType}!`);
+  // Dynamic retention cohorts
+  const eligible30 = items.filter(
+    (i) => i.retentionDays === 30 && i.status !== 'AUCTION_DONATED' && i.status !== 'RETURNED'
+  );
+  const eligible60 = items.filter(
+    (i) => i.retentionDays === 60 && i.status !== 'AUCTION_DONATED' && i.status !== 'RETURNED'
+  );
+  const eligible90 = items.filter(
+    (i) => i.retentionDays === 90 && i.status !== 'AUCTION_DONATED' && i.status !== 'RETURNED'
+  );
+
+  const handleTriggerDisposition = async (dispositionType: 'DONATION' | 'AUCTION' | 'REGISTRAR', retentionDays: 30 | 60 | 90) => {
+    const targets = items.filter(
+      (i) => i.retentionDays === retentionDays && i.status !== 'AUCTION_DONATED' && i.status !== 'RETURNED'
+    );
+    if (targets.length === 0) {
+      showToast(`No items currently pending disposition for ${dispositionType}`);
+      return;
+    }
+
+    try {
+      await Promise.all(
+        targets.map((item) =>
+          api.updateItemStatus(item.id, dispositionType === 'REGISTRAR' ? 'LOGGED_IN_DEPOT' : 'AUCTION_DONATED', undefined, 'ADMIN')
+        )
+      );
+      await refreshData();
+      showToast(`Successfully dispatched ${targets.length} units to ${dispositionType}!`);
+    } catch (e: any) {
+      showToast(e?.message || 'Disposition processing error');
+    }
   };
 
   const quadrantStats = [
@@ -222,7 +253,7 @@ export default function AdminDashboard() {
             <CampusMapView
               items={items}
               hotspots={hotspots}
-              onSelectItem={() => {}}
+              onSelectItem={(item) => setSelectedItem(item)}
               userRole="ADMIN"
             />
           </div>
@@ -253,10 +284,17 @@ export default function AdminDashboard() {
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">General Goods & Apparel</h4>
                   <p className="text-xs text-slate-500">Water bottles, umbrellas, jackets, notebooks, and sports gear.</p>
                   <div className="pt-2 border-t border-hairline flex items-center justify-between">
-                    <span className="text-xs font-mono text-slate-400">Eligible: 6 items</span>
+                    <span className="text-xs font-mono text-slate-400">
+                      Eligible: {eligible30.length} items
+                    </span>
                     <button
-                      onClick={() => handleTriggerDisposition('DONATION', 6)}
-                      className="px-3 py-1 rounded-apple-pill bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-all"
+                      onClick={() => handleTriggerDisposition('DONATION', 30)}
+                      disabled={eligible30.length === 0}
+                      className={`px-3 py-1 rounded-apple-pill text-xs font-semibold transition-all ${
+                        eligible30.length === 0
+                          ? 'bg-white/5 text-slate-500 cursor-not-allowed'
+                          : 'bg-white/10 hover:bg-white/20 text-white'
+                      }`}
                     >
                       Dispatch Donation
                     </button>
@@ -272,10 +310,17 @@ export default function AdminDashboard() {
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">Electronics & Gadgets</h4>
                   <p className="text-xs text-slate-500">Earbuds, calculators, tablets, chargers, and Bluetooth accessories.</p>
                   <div className="pt-2 border-t border-hairline flex items-center justify-between">
-                    <span className="text-xs font-mono text-slate-400">Eligible: 3 items</span>
+                    <span className="text-xs font-mono text-slate-400">
+                      Eligible: {eligible60.length} items
+                    </span>
                     <button
-                      onClick={() => handleTriggerDisposition('AUCTION', 3)}
-                      className="px-3 py-1 rounded-apple-pill bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-all"
+                      onClick={() => handleTriggerDisposition('AUCTION', 60)}
+                      disabled={eligible60.length === 0}
+                      className={`px-3 py-1 rounded-apple-pill text-xs font-semibold transition-all ${
+                        eligible60.length === 0
+                          ? 'bg-white/5 text-slate-500 cursor-not-allowed'
+                          : 'bg-white/10 hover:bg-white/20 text-white'
+                      }`}
                     >
                       Dispatch Auction
                     </button>
@@ -291,10 +336,17 @@ export default function AdminDashboard() {
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">High Value & Credentials</h4>
                   <p className="text-xs text-slate-500">Government IDs, passports, student smartcards, and sealed jewelry.</p>
                   <div className="pt-2 border-t border-hairline flex items-center justify-between">
-                    <span className="text-xs font-mono text-slate-400">Eligible: 2 items</span>
+                    <span className="text-xs font-mono text-slate-400">
+                      Eligible: {eligible90.length} items
+                    </span>
                     <button
-                      onClick={() => showToast('Transferred to Registrar permanent vault vault')}
-                      className="px-3 py-1 rounded-apple-pill bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-all"
+                      onClick={() => handleTriggerDisposition('REGISTRAR', 90)}
+                      disabled={eligible90.length === 0}
+                      className={`px-3 py-1 rounded-apple-pill text-xs font-semibold transition-all ${
+                        eligible90.length === 0
+                          ? 'bg-white/5 text-slate-500 cursor-not-allowed'
+                          : 'bg-white/10 hover:bg-white/20 text-white'
+                      }`}
                     >
                       Archive Registrar
                     </button>
@@ -377,6 +429,18 @@ export default function AdminDashboard() {
           </div>
         )}
       </main>
+
+      {/* Item Detail Modal */}
+      {selectedItem && (
+        <ItemDetailModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onOpenClaim={() => showToast('Claim review opened in security queue.')}
+          onOpenMatch={() => showToast('AI contour comparison stream opened.')}
+          onOpenChat={() => showToast('Staff relay encrypted channel opened.')}
+          userRole="ADMIN"
+        />
+      )}
 
       {/* Feedback Modal */}
       <FeedbackModal
