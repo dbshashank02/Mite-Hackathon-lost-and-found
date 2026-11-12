@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Item,
@@ -28,6 +28,8 @@ import {
   Radio,
   RefreshCw,
   Upload,
+  Video,
+  VideoOff,
 } from 'lucide-react';
 
 export default function FinderDashboard() {
@@ -101,6 +103,76 @@ export default function FinderDashboard() {
   useEffect(() => {
     refreshData();
   }, []);
+
+  // Real Camera WebRTC Stream State & Refs
+  const [isLiveCamera, setIsLiveCamera] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const startCamera = async () => {
+    setCameraError(null);
+    try {
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+        showToast('Camera API not supported in this browser.');
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+      setIsLiveCamera(true);
+      showToast('Live camera active! Position product in scan frame.');
+    } catch (err: any) {
+      setCameraError('Camera access denied or unavailable.');
+      showToast('Camera permission denied or camera device not found.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setIsLiveCamera(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  const captureProductScan = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const capturedData = canvas.toDataURL('image/jpeg', 0.88);
+        setImageUrl(capturedData);
+        setIsCapturing(true);
+        setTimeout(() => {
+          setIsCapturing(false);
+          stopCamera();
+          showToast('Product scanned from camera! AI contours indexed.');
+        }, 500);
+        return;
+      }
+    }
+    handleSimulateShutter();
+  };
 
   const handleSimulateShutter = () => {
     setIsCapturing(true);
@@ -276,14 +348,27 @@ export default function FinderDashboard() {
         {/* TAB 1: Fast-Log Studio */}
         {activeTab === 'FAST_LOG' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left 6 Cols: Tesla Viewfinder Studio Simulation */}
+            {/* Left 6 Cols: Tesla Viewfinder Studio & Live WebCam Scanner */}
             <div className="lg:col-span-6 space-y-4">
               <div className="relative rounded-apple-2xl overflow-hidden border border-hairline bg-black shadow-2xl aspect-[4/3] flex items-center justify-center group">
-                <img
-                  src={imageUrl}
-                  alt="Camera Viewfinder Stream"
-                  className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
-                />
+                {isLiveCamera ? (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={imageUrl}
+                    alt="Camera Viewfinder Stream"
+                    className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
+
+                {/* Hidden canvas for video snapshot */}
+                <canvas ref={canvasRef} className="hidden" />
 
                 {/* Viewfinder Target HUD Overlay */}
                 <div className="absolute inset-0 p-5 pointer-events-none flex flex-col justify-between">
@@ -291,12 +376,30 @@ export default function FinderDashboard() {
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-1 rounded-apple-pill bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono text-telemetry-emerald flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-telemetry-emerald animate-pulse" />
-                      <span>4K AI OPTICAL VIEW</span>
+                      <span>{isLiveCamera ? 'LIVE WEBCAM OPTICAL FEED' : 'AI OPTICAL VIEW'}</span>
                     </span>
 
-                    <span className="px-2 py-0.5 rounded-apple-pill bg-black/70 backdrop-blur-md text-[10px] font-mono text-slate-300">
-                      ISO 400 &middot; F/1.8
-                    </span>
+                    <div className="pointer-events-auto flex items-center gap-1.5">
+                      {isLiveCamera ? (
+                        <button
+                          type="button"
+                          onClick={stopCamera}
+                          className="px-2.5 py-1 rounded-apple-pill bg-tesla-crimson hover:bg-tesla-crimson/90 text-white text-[10px] font-mono flex items-center gap-1 transition-all shadow-md"
+                        >
+                          <VideoOff className="w-3 h-3" />
+                          <span>Close Camera</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={startCamera}
+                          className="px-2.5 py-1 rounded-apple-pill bg-apple-blue hover:bg-apple-blueHover text-white text-[10px] font-mono flex items-center gap-1 transition-all shadow-md"
+                        >
+                          <Camera className="w-3 h-3" />
+                          <span>Enable Live Camera</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Center Target Box */}
@@ -306,26 +409,26 @@ export default function FinderDashboard() {
                     <div className="w-4 h-4 border-b-2 border-l-2 border-apple-blue absolute -bottom-1 -left-1" />
                     <div className="w-4 h-4 border-b-2 border-r-2 border-apple-blue absolute -bottom-1 -right-1" />
                     <span className="text-[10px] font-mono text-white/80 uppercase tracking-widest bg-black/60 px-2 py-0.5 rounded-apple-pill">
-                      Contour Lock
+                      {isLiveCamera ? 'Center Product' : 'Contour Lock'}
                     </span>
                   </div>
 
                   {/* Bottom HUD */}
                   <div className="flex items-center justify-between text-[10px] font-mono text-slate-300 bg-black/70 backdrop-blur-md p-2 rounded-apple-md">
                     <span>GPS: 240.5N &middot; 320.1W</span>
-                    <span>AI AUTO-CLASSIFIER: ACTIVE</span>
+                    <span>AI AUTO-CLASSIFIER: {isLiveCamera ? 'STREAMING' : 'ACTIVE'}</span>
                   </div>
                 </div>
 
-                {/* Camera Shutter simulation button */}
+                {/* Camera Shutter / Scan button */}
                 <button
                   type="button"
-                  onClick={handleSimulateShutter}
+                  onClick={isLiveCamera ? captureProductScan : handleSimulateShutter}
                   disabled={isCapturing}
-                  className="absolute bottom-6 self-center w-14 h-14 rounded-full border-4 border-white bg-white/20 hover:bg-white/40 active:scale-95 transition-all flex items-center justify-center shadow-2xl backdrop-blur-md"
-                  title="Snap photo"
+                  className="absolute bottom-6 self-center w-14 h-14 rounded-full border-4 border-white bg-white/20 hover:bg-white/40 active:scale-95 transition-all flex items-center justify-center shadow-2xl backdrop-blur-md pointer-events-auto"
+                  title={isLiveCamera ? "Capture Live Product Scan" : "Snap photo"}
                 >
-                  <div className="w-10 h-10 rounded-full bg-white" />
+                  <div className={`w-10 h-10 rounded-full ${isLiveCamera ? 'bg-telemetry-emerald' : 'bg-white'}`} />
                 </button>
               </div>
 

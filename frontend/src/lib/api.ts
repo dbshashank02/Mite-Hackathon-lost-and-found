@@ -26,9 +26,53 @@ import {
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
 const AI_ENGINE_URL = process.env.NEXT_PUBLIC_AI_ENGINE_URL || 'http://localhost:8000';
 
-// In-memory fallback state for smooth offline hackathon demos
-let localItems: Item[] = [...INITIAL_ITEMS];
-let localClaims: Claim[] = [...INITIAL_CLAIMS];
+const STORAGE_ITEMS_KEY = 'findit_local_items';
+const STORAGE_CLAIMS_KEY = 'findit_local_claims';
+
+function getStoredItems(): Item[] {
+  if (typeof window !== 'undefined') {
+    try {
+      const data = localStorage.getItem(STORAGE_ITEMS_KEY);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.warn('Could not read items from localStorage:', e);
+    }
+  }
+  return [...INITIAL_ITEMS];
+}
+
+function getStoredClaims(): Claim[] {
+  if (typeof window !== 'undefined') {
+    try {
+      const data = localStorage.getItem(STORAGE_CLAIMS_KEY);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.warn('Could not read claims from localStorage:', e);
+    }
+  }
+  return [...INITIAL_CLAIMS];
+}
+
+function persistLocalState() {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(localItems));
+      localStorage.setItem(STORAGE_CLAIMS_KEY, JSON.stringify(localClaims));
+    } catch (e) {
+      console.warn('Could not persist to localStorage:', e);
+    }
+  }
+}
+
+// In-memory & localStorage fallback state for smooth offline hackathon demos
+let localItems: Item[] = getStoredItems();
+let localClaims: Claim[] = getStoredClaims();
 let localMatchResults: Record<string, MatchResult[]> = { ...INITIAL_MATCH_RESULTS };
 let localChat: Record<string, ChatMessage[]> = { ...INITIAL_CHAT };
 let localAnalytics: AnalyticsSummary = { ...INITIAL_ANALYTICS };
@@ -146,6 +190,9 @@ export const api = {
       `/api/items?${query.toString()}`,
       { method: 'GET' },
       () => {
+        if (typeof window !== 'undefined') {
+          localItems = getStoredItems();
+        }
         let results = [...localItems];
 
         if (filters.type && filters.type !== 'ALL') {
@@ -206,6 +253,7 @@ export const api = {
         };
 
         localItems.unshift(newItem);
+        persistLocalState();
 
         // Generate synthetic AI match against candidates
         const candidates = localItems.filter(
@@ -274,6 +322,7 @@ export const api = {
     if (item) {
       item.status = status;
       if (lockerId !== undefined) item.lockerId = lockerId;
+      persistLocalState();
     }
     return item || localItems[0];
   },
@@ -314,6 +363,7 @@ export const api = {
         if (targetItem) {
           targetItem.status = 'CLAIM_PENDING';
         }
+        persistLocalState();
 
         return newClaim;
       },
@@ -356,6 +406,7 @@ export const api = {
           claim.fraudFlags.push('Claim denied: Details mismatched Depot inventory');
         }
 
+        persistLocalState();
         return claim;
       },
       role
@@ -366,7 +417,12 @@ export const api = {
     return apiRequest(
       '/api/claims',
       { method: 'GET' },
-      () => localClaims,
+      () => {
+        if (typeof window !== 'undefined') {
+          localClaims = getStoredClaims();
+        }
+        return localClaims;
+      },
       role
     );
   },
@@ -404,6 +460,7 @@ export const api = {
         }
 
         claim.status = 'APPROVED';
+        persistLocalState();
 
         return {
           success: true,
