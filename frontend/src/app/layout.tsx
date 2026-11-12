@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'FindIt Campus — Next-Gen AI Lost & Found Ecosystem',
+  title: 'MITERetrieve — Next-Gen AI Lost & Found Ecosystem',
   description:
-    'Campus-wide intelligent lost and found network with multimodal vision matching, privacy shielding, contactless QR handover, and custody chain.',
+    'MITE Campus intelligent lost and found network with multimodal vision matching, privacy shielding, contactless QR handover, and custody chain.',
   manifest: '/manifest.json',
 };
 

@@ -152,9 +152,9 @@ export default function LoginPage() {
             <div className="w-5 h-5 rounded-full bg-[#FF4A36] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
               <span className="w-2 h-2 rounded-full bg-white" />
             </div>
-            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-              <span>FindIt</span>
-              <span className="text-slate-400 font-normal text-xs ml-0.5">Campus</span>
+            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center">
+              <span>MITE</span>
+              <span className="text-[#FF4A36]">Retrieve</span>
             </span>
           </Link>
 
@@ -170,7 +170,7 @@ export default function LoginPage() {
         <div className="lg:col-span-5 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4A36]/10 border border-[#FF4A36]/20 text-xs font-semibold text-[#FF4A36]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Campus Lost &amp; Found Reimagined</span>
+            <span>MITERetrieve &middot; Campus Recovery</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.08]">
@@ -416,7 +416,7 @@ export default function LoginPage() {
 
       {/* Footer */}
       <footer className="w-full py-4 px-4 sm:px-8 border-t border-hairline text-center text-xs text-slate-500">
-        FindIt Campus &middot; University Lost &amp; Found System
+        MITERetrieve &middot; MITE Campus Lost &amp; Found Ecosystem
       </footer>
     </div>
   );

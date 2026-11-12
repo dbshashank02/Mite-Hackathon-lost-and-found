@@ -167,7 +167,7 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
           {/* Precision QR Code Container */}
           <div className="p-4 rounded-2xl bg-white shadow-2xl mb-6">
             <QRCodeSVG
-              value={currentClaim?.qrToken || 'FINDIT-CAMPUS-PASS-2026'}
+              value={currentClaim?.qrToken || 'MITERETRIEVE-PASS-2026'}
               size={170}
               level="H"
               includeMargin={false}

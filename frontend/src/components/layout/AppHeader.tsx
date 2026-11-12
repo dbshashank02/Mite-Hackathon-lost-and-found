@@ -32,9 +32,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             <div className="w-5 h-5 rounded-full bg-[#FF4A36] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
               <span className="w-2 h-2 rounded-full bg-white" />
             </div>
-            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-              <span>FindIt</span>
-              <span className="text-slate-400 font-normal text-xs ml-0.5">Campus</span>
+            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center">
+              <span>MITE</span>
+              <span className="text-[#FF4A36]">Retrieve</span>
             </span>
           </Link>
 

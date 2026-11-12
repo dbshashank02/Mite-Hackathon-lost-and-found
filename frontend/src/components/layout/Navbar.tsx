@@ -26,9 +26,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Apple Wordmark + Live Telemetry Status Pulse */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-              <span>FindIt</span>
-              <span className="text-apple-blue font-bold">Campus</span>
+            <span className="font-semibold text-sm tracking-tight text-slate-900 dark:text-white flex items-center">
+              <span>MITE</span>
+              <span className="text-[#FF4A36]">Retrieve</span>
             </span>
           </div>
 
