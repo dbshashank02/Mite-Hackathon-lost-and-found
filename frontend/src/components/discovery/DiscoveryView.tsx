@@ -72,97 +72,10 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
   };
 
   // Top high-priority found item for Tesla-inspired Hero
-  const heroItem = items.find((i) => i.type === 'FOUND' && i.status === 'LOGGED_IN_DEPOT') || items[0];
-
   return (
-    <div className="w-full space-y-10 pb-28">
-      {/* 1. Tesla-Inspired Full-Bleed Studio Hero Banner */}
-      {heroItem && (
-        <div className="relative w-full rounded-apple-2xl overflow-hidden studio-surface border border-hairline p-6 sm:p-12 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Hero Details */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-apple-pill bg-white/5 border border-hairline text-[11px] font-mono uppercase text-slate-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-telemetry-emerald animate-pulse" />
-                <span>Priority Depot Intake</span>
-              </div>
-
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tightest text-white leading-tight">
-                {heroItem.title}
-              </h1>
-
-              <p className="text-sm sm:text-base text-slate-400 max-w-xl leading-relaxed">
-                Vault inventory logged with zero-exposure privacy protection. Visual vector similarity
-                and spatio-temporal telemetry ready for verified claimant recovery.
-              </p>
-
-              {/* Tesla Telemetry Specs Bar */}
-              <div className="grid grid-cols-3 gap-3 pt-3 max-w-lg border-t border-hairline">
-                <div>
-                  <span className="text-[10px] uppercase font-mono text-slate-500 block">
-                    Confidence
-                  </span>
-                  <span className="text-lg sm:text-xl font-bold text-white tabular-numbers">
-                    96.4%
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-mono text-slate-500 block">
-                    Depot Vault
-                  </span>
-                  <span className="text-lg sm:text-xl font-mono font-bold text-telemetry-emerald">
-                    {heroItem.lockerId || 'VAULT-01'}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-mono text-slate-500 block">
-                    Retention
-                  </span>
-                  <span className="text-lg sm:text-xl font-bold text-amber-400 tabular-numbers">
-                    {heroItem.retentionDays}D Remaining
-                  </span>
-                </div>
-              </div>
-
-              {/* Dual Apple Pill CTAs */}
-              <div className="flex items-center gap-3 pt-2">
-                <button
-                  onClick={() => onOpenClaim(heroItem)}
-                  className="px-6 py-3 rounded-apple-pill bg-white text-black font-semibold text-xs sm:text-sm hover:bg-slate-200 transition-all active:scale-95 shadow-sm"
-                >
-                  Claim Ownership
-                </button>
-                <button
-                  onClick={() => onOpenMatch(heroItem)}
-                  className="px-6 py-3 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-hairline transition-all active:scale-95 flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-4 h-4 text-apple-blue" />
-                  <span>AI Match Telemetry</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Right Product Studio Visual */}
-            <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="relative w-full aspect-square max-w-md rounded-apple-xl overflow-hidden border border-hairline shadow-apple-glass">
-                <img
-                  src={heroItem.imageUrl}
-                  alt={heroItem.title}
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-slate-300">
-                  <span>{getBuildingName(heroItem.buildingId)}</span>
-                  <span>{new Date(heroItem.timestamp).toLocaleDateString()}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 2. Apple Controls Bar: Search, Segmented LOST/FOUND, and Category Pills */}
-      <div className="space-y-4">
+    <div className="w-full space-y-6 pb-20">
+      {/* Search, Segmented LOST/FOUND, and Category Pills */}
+      <div className="space-y-3">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Minimalist Search */}
           <div className="relative flex-1 max-w-md">

@@ -174,85 +174,35 @@ export default function StudentDashboard() {
       <AppHeader currentUser={currentUser} activeRoleTitle="STUDENT HUB" />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
-        {/* Student Hero Telemetry Banner */}
-        <div className="p-6 rounded-apple-2xl studio-surface border border-hairline shadow-sm relative overflow-hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase text-apple-blue font-bold px-2.5 py-0.5 rounded-apple-pill bg-apple-blue/10 border border-apple-blue/20">
-                  Student Claimant Hub
-                </span>
-                <span className="text-xs text-slate-400 font-mono">
-                  SSO: {currentUser.email}
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Welcome back, {currentUser.handle.split(' ')[0]}
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
-                Browse verified campus catalog items under zero-exposure privacy protection, review AI contour matches, and redeem locker pickup passes.
-              </p>
-            </div>
-
-            {/* Quick Action Badges */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setIsReportModalOpen(true)}
-                className="px-4 py-2.5 rounded-apple-pill bg-apple-blue hover:bg-apple-blue/90 text-white font-semibold text-xs transition-all shadow-sm flex items-center gap-2"
-              >
-                <Search className="w-3.5 h-3.5" />
-                <span>Report Lost Item</span>
-              </button>
-
-              {activePickupClaim && (
-                <button
-                  onClick={() => setActiveTab('HANDOVER')}
-                  className="px-4 py-2.5 rounded-apple-pill bg-telemetry-emerald/15 hover:bg-telemetry-emerald/25 text-telemetry-emerald border border-telemetry-emerald/30 font-semibold text-xs transition-all flex items-center gap-2 animate-pulse"
-                >
-                  <QrCode className="w-3.5 h-3.5" />
-                  <span>Pickup Pass Ready!</span>
-                </button>
-              )}
-            </div>
+        {/* Student Minimalist Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Welcome back, {currentUser.handle.split(' ')[0]}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Search campus belongings, track claims, or report something lost.
+            </p>
           </div>
 
-          {/* AI Match Alert Banner (Tesla Telemetry Style) */}
-          <div className="mt-5 pt-4 border-t border-hairline grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3 rounded-apple-lg bg-black/[0.02] dark:bg-white/[0.02] border border-hairline flex items-center gap-3">
-              <div className="w-8 h-8 rounded-apple-md bg-apple-blue/10 flex items-center justify-center text-apple-blue">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase text-slate-400">AI Match Engine</div>
-                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  Multimodal 4-Factor Active
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setIsReportModalOpen(true)}
+              className="px-4 py-2 rounded-apple-pill bg-apple-blue hover:bg-apple-blue/90 text-white font-medium text-xs transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Report Lost Item</span>
+            </button>
 
-            <div className="p-3 rounded-apple-lg bg-black/[0.02] dark:bg-white/[0.02] border border-hairline flex items-center gap-3">
-              <div className="w-8 h-8 rounded-apple-md bg-telemetry-emerald/10 flex items-center justify-center text-telemetry-emerald">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase text-slate-400">Zero-Exposure Shield</div>
-                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  Private Traits Obfuscated
-                </div>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-apple-lg bg-black/[0.02] dark:bg-white/[0.02] border border-hairline flex items-center gap-3">
-              <div className="w-8 h-8 rounded-apple-md bg-tesla-amber/10 flex items-center justify-center text-tesla-amber">
-                <Clock className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase text-slate-400">Depot Pickup Window</div>
-                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  48-hr Secure Vault Reservation
-                </div>
-              </div>
-            </div>
+            {activePickupClaim && (
+              <button
+                onClick={() => setActiveTab('HANDOVER')}
+                className="px-4 py-2 rounded-apple-pill bg-telemetry-emerald/15 hover:bg-telemetry-emerald/25 text-telemetry-emerald border border-telemetry-emerald/30 font-medium text-xs transition-all flex items-center gap-1.5"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+                <span>Pickup Pass Ready</span>
+              </button>
+            )}
           </div>
         </div>
 

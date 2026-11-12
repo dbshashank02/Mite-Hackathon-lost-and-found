@@ -262,44 +262,22 @@ export default function FinderDashboard() {
       <AppHeader currentUser={currentUser} activeRoleTitle="GOOD SAMARITAN FINDER" />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
-        {/* Finder Hero Telemetry Banner */}
-        <div className="p-6 rounded-apple-2xl studio-surface border border-hairline shadow-sm relative overflow-hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase text-telemetry-emerald font-bold px-2.5 py-0.5 rounded-apple-pill bg-telemetry-emerald/10 border border-telemetry-emerald/20">
-                  Good Samaritan Community Portal
-                </span>
-                <span className="text-xs text-slate-400 font-mono">
-                  SSO: {currentUser.email}
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Turn Lost into Found, {currentUser.handle.split(' ')[0]}
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
-                Quick-capture found campus belongings with camera-first photo logging, auto-GPS tagging, and automated depot smart locker custody.
-              </p>
-            </div>
+        {/* Finder Minimalist Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Log a Found Item
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Snap a photo with your camera or upload an image to help return a lost item.
+            </p>
+          </div>
 
-            {/* Vault Contribution Badge */}
-            <div className="p-3.5 rounded-apple-xl bg-black/[0.03] dark:bg-white/[0.04] border border-hairline flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-telemetry-emerald/10 border border-telemetry-emerald/30 flex items-center justify-center text-telemetry-emerald">
-                <Award className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase text-slate-400">Vault Contributions</div>
-                <div className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>{myLoggedItems.length} Logged Items</span>
-                  <span className="text-[10px] font-mono text-telemetry-emerald bg-telemetry-emerald/10 px-1.5 py-0.5 rounded-apple-pill">
-                    Verified Intake
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono">
-                  Safeguarded in campus vault
-                </span>
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1.5 rounded-apple-pill bg-black/5 dark:bg-white/5 border border-hairline text-xs text-slate-600 dark:text-slate-300 font-medium flex items-center gap-1.5">
+              <Award className="w-3.5 h-3.5 text-telemetry-emerald" />
+              <span>{myLoggedItems.length} Logged Items</span>
+            </span>
           </div>
         </div>
 
@@ -314,7 +292,7 @@ export default function FinderDashboard() {
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
-            <span>Camera-First Fast-Log Studio</span>
+            <span>Scan &amp; Log</span>
           </button>
 
           <button
@@ -326,7 +304,7 @@ export default function FinderDashboard() {
             }`}
           >
             <Lock className="w-3.5 h-3.5" />
-            <span>Smart Locker Drop-Off Pass</span>
+            <span>Locker Drop-Off</span>
             {depositPass && depositPass.status !== 'DEPOSITED' && (
               <span className="w-2 h-2 rounded-full bg-telemetry-emerald animate-pulse" />
             )}
@@ -341,7 +319,7 @@ export default function FinderDashboard() {
             }`}
           >
             <HeartHandshake className="w-3.5 h-3.5" />
-            <span>My Contributions ({myLoggedItems.length})</span>
+            <span>My Items ({myLoggedItems.length})</span>
           </button>
         </div>
 

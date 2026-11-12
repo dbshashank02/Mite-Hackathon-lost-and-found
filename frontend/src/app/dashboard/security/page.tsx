@@ -224,45 +224,22 @@ export default function SecurityDashboard() {
       <AppHeader currentUser={currentUser} activeRoleTitle="CAMPUS SECURITY VAULT" />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
-        {/* Security Hero Telemetry Banner */}
-        <div className="p-6 rounded-apple-2xl studio-surface border border-hairline shadow-sm relative overflow-hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase text-tesla-amber font-bold px-2.5 py-0.5 rounded-apple-pill bg-tesla-amber/10 border border-tesla-amber/20 flex items-center gap-1.5">
-                  <KeyRound className="w-3 h-3" />
-                  <span>Vault Clearance Level 4</span>
-                </span>
-                <span className="text-xs text-slate-400 font-mono">
-                  Badge: {currentUser.email}
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Depot Security & Vault Terminal
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
-                Unmasked forensic telemetry, side-by-side fraud verification queue, contactless QR/OTP scanner, and 50-locker vault automation.
-              </p>
-            </div>
+        {/* Security Minimalist Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Campus Security &amp; Vault
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Verify claims, authenticate pickup passes, and manage depot lockers.
+            </p>
+          </div>
 
-            {/* Live Vault Status Pill */}
-            <div className="p-3.5 rounded-apple-xl bg-black/[0.03] dark:bg-white/[0.04] border border-hairline flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-tesla-amber/10 border border-tesla-amber/30 flex items-center justify-center text-tesla-amber">
-                <Lock className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase text-slate-400">Smart Vault Capacity</div>
-                <div className="text-base font-bold text-slate-900 dark:text-white font-mono flex items-center gap-2">
-                  <span>{occupiedCount} / 50 Occupied</span>
-                  <span className="text-[10px] font-mono text-telemetry-emerald bg-telemetry-emerald/10 px-1.5 py-0.5 rounded-apple-pill">
-                    {availableCount} Free
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono">
-                  {claims.filter((c) => c.status === 'PENDING').length} Pending Claims Awaiting Review
-                </span>
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1.5 rounded-apple-pill bg-black/5 dark:bg-white/5 border border-hairline text-xs text-slate-600 dark:text-slate-300 font-medium flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-tesla-amber" />
+              <span>{occupiedCount}/50 Lockers Occupied</span>
+            </span>
           </div>
         </div>
 
@@ -277,7 +254,7 @@ export default function SecurityDashboard() {
             }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
-            <span>Claims Verification Queue ({claims.length})</span>
+            <span>Review Claims ({claims.length})</span>
             {claims.some((c) => c.status === 'PENDING') && (
               <span className="w-2 h-2 rounded-full bg-tesla-crimson animate-pulse" />
             )}
@@ -292,7 +269,7 @@ export default function SecurityDashboard() {
             }`}
           >
             <Scan className="w-3.5 h-3.5" />
-            <span>Physical Handover Scanner</span>
+            <span>Handover Scanner</span>
           </button>
 
           <button
@@ -304,7 +281,7 @@ export default function SecurityDashboard() {
             }`}
           >
             <Lock className="w-3.5 h-3.5" />
-            <span>50-Locker Smart Vault Grid</span>
+            <span>Smart Lockers</span>
           </button>
 
           <button
@@ -316,7 +293,7 @@ export default function SecurityDashboard() {
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>Unmasked Forensic Telemetry</span>
+            <span>Depot Inventory</span>
           </button>
         </div>
 
