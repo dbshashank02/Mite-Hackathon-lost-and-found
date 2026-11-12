@@ -3,69 +3,83 @@
 @tailwind utilities;
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #0B0E14;
-  --card-bg: rgba(255, 255, 255, 0.85);
-  --card-border: rgba(0, 0, 0, 0.08);
+  --bg-primary: #F5F5F7;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #86868B;
+  --hairline-border: rgba(0, 0, 0, 0.08);
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --glass-header: rgba(245, 245, 247, 0.82);
 }
 
 .dark {
-  --background: #0B0E14;
-  --foreground: #F8FAFC;
-  --card-bg: rgba(255, 255, 255, 0.04);
-  --card-border: rgba(255, 255, 255, 0.08);
+  --bg-primary: #000000;
+  --bg-secondary: #0A0A0C;
+  --text-primary: #F5F5F7;
+  --text-secondary: #86868B;
+  --hairline-border: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(18, 18, 22, 0.65);
+  --glass-header: rgba(10, 10, 12, 0.8);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
+.tabular-numbers {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Apple Frosted Glass with Saturation */
+.apple-glass {
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--card-border);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--hairline-border);
 }
 
-.glass-panel-heavy {
-  background: rgba(18, 24, 36, 0.85);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+.apple-header {
+  background: var(--glass-header);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--hairline-border);
+}
+
+.apple-dock {
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* Privacy Mask Shield */
-.privacy-mask-shield {
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  background: rgba(15, 23, 42, 0.75);
+.light .apple-dock {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.light .privacy-mask-shield {
-  background: rgba(241, 245, 249, 0.82);
+/* Apple-grade studio surface */
+.studio-surface {
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0) 70%), var(--bg-secondary);
 }
 
-/* Radial Glow Orbs */
-.radial-glow-orange {
-  background: radial-gradient(circle, rgba(255, 94, 58, 0.22) 0%, rgba(255, 94, 58, 0) 70%);
+.light .studio-surface {
+  background: radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0) 70%), var(--bg-secondary);
 }
 
-.radial-glow-emerald {
-  background: radial-gradient(circle, rgba(0, 229, 153, 0.22) 0%, rgba(0, 229, 153, 0) 70%);
+/* Hairline borders */
+.border-hairline {
+  border-color: var(--hairline-border);
 }
 
-.radial-glow-violet {
-  background: radial-gradient(circle, rgba(112, 0, 255, 0.25) 0%, rgba(112, 0, 255, 0) 70%);
-}
-
-/* Custom Minimal Scrollbar */
+/* Precision scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -73,21 +87,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.3);
+  background: rgba(140, 140, 145, 0.25);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.5);
-}
-
-/* Dot matrix pattern */
-.dot-matrix-bg {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-.light .dot-matrix-bg {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
-  background-size: 16px 16px;
+  background: rgba(140, 140, 145, 0.45);
 }

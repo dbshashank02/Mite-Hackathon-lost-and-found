@@ -1,17 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   Search,
-  SlidersHorizontal,
-  LayoutGrid,
   Layers,
+  LayoutGrid,
+  ShieldCheck,
   Sparkles,
-  Camera,
   MapPin,
   Calendar,
-  Filter,
-  CheckCircle2,
+  Lock,
+  ArrowRight,
+  Clock,
+  Radio,
 } from 'lucide-react';
 import { Item, ItemCategory, ItemType, UserRole } from '../../types';
 import { CardStackCarousel } from './CardStackCarousel';
@@ -21,6 +23,7 @@ interface DiscoveryViewProps {
   items: Item[];
   onSelectItem: (item: Item) => void;
   onOpenMatch: (item: Item) => void;
+  onOpenClaim: (item: Item) => void;
   onOpenReportModal: () => void;
   userRole: UserRole;
   selectedCategory: ItemCategory | 'ALL';
@@ -35,6 +38,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
   items,
   onSelectItem,
   onOpenMatch,
+  onOpenClaim,
   onOpenReportModal,
   userRole,
   selectedCategory,
@@ -44,7 +48,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
   searchQuery,
   onSearchChange,
 }) => {
-  const [viewMode, setViewMode] = useState<'3D' | 'GRID'>('3D');
+  const [viewMode, setViewMode] = useState<'BENTO' | '3D'>('BENTO');
 
   const categories: (ItemCategory | 'ALL')[] = [
     'ALL',
@@ -60,103 +64,158 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
     return CAMPUS_BUILDINGS.find((b) => b.id === id)?.name || id;
   };
 
+  // Top high-priority found item for Tesla-inspired Hero
+  const heroItem = items.find((i) => i.type === 'FOUND' && i.status === 'LOGGED_IN_DEPOT') || items[0];
+
   return (
-    <div className="w-full space-y-6 pb-24">
-      {/* Hero Headline & Fast-Log Banner */}
-      <div className="relative rounded-3xl overflow-hidden glass-panel-heavy p-6 sm:p-8 border border-white/10 shadow-2xl">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-gradient-to-br from-[#FF5E3A]/25 via-[#7000FF]/20 to-[#00E599]/20 rounded-full blur-3xl pointer-events-none" />
+    <div className="w-full space-y-10 pb-28">
+      {/* 1. Tesla-Inspired Full-Bleed Studio Hero Banner */}
+      {heroItem && (
+        <div className="relative w-full rounded-apple-2xl overflow-hidden studio-surface border border-hairline p-6 sm:p-12 shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Hero Details */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-apple-pill bg-white/5 border border-hairline text-[11px] font-mono uppercase text-slate-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-telemetry-emerald animate-pulse" />
+                <span>Priority Depot Intake</span>
+              </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-[#00E599]/15 text-[#00E599] border border-[#00E599]/30 mb-3">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Campus Deep Learning Pipeline Active</span>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tightest text-white leading-tight">
+                {heroItem.title}
+              </h1>
+
+              <p className="text-sm sm:text-base text-slate-400 max-w-xl leading-relaxed">
+                Vault inventory logged with zero-exposure privacy protection. Visual vector similarity
+                and spatio-temporal telemetry ready for verified claimant recovery.
+              </p>
+
+              {/* Tesla Telemetry Specs Bar */}
+              <div className="grid grid-cols-3 gap-3 pt-3 max-w-lg border-t border-hairline">
+                <div>
+                  <span className="text-[10px] uppercase font-mono text-slate-500 block">
+                    Confidence
+                  </span>
+                  <span className="text-lg sm:text-xl font-bold text-white tabular-numbers">
+                    96.4%
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase font-mono text-slate-500 block">
+                    Depot Vault
+                  </span>
+                  <span className="text-lg sm:text-xl font-mono font-bold text-telemetry-emerald">
+                    {heroItem.lockerId || 'VAULT-01'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase font-mono text-slate-500 block">
+                    Retention
+                  </span>
+                  <span className="text-lg sm:text-xl font-bold text-amber-400 tabular-numbers">
+                    {heroItem.retentionDays}D Remaining
+                  </span>
+                </div>
+              </div>
+
+              {/* Dual Apple Pill CTAs */}
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  onClick={() => onOpenClaim(heroItem)}
+                  className="px-6 py-3 rounded-apple-pill bg-white text-black font-semibold text-xs sm:text-sm hover:bg-slate-200 transition-all active:scale-95 shadow-sm"
+                >
+                  Claim Ownership
+                </button>
+                <button
+                  onClick={() => onOpenMatch(heroItem)}
+                  className="px-6 py-3 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-hairline transition-all active:scale-95 flex items-center gap-1.5"
+                >
+                  <Sparkles className="w-4 h-4 text-apple-blue" />
+                  <span>AI Match Telemetry</span>
+                </button>
+              </div>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-              Instant AI Vision Recovery across Campus Grounds
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-2">
-              Lost an item or found misplaced property? Our multimodal matching engine clusters items
-              by visual traits, geo-pins, and timestamp correlations.
-            </p>
+
+            {/* Right Product Studio Visual */}
+            <div className="lg:col-span-5 relative flex items-center justify-center">
+              <div className="relative w-full aspect-square max-w-md rounded-apple-xl overflow-hidden border border-hairline shadow-apple-glass">
+                <img
+                  src={heroItem.imageUrl}
+                  alt={heroItem.title}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-slate-300">
+                  <span>{getBuildingName(heroItem.buildingId)}</span>
+                  <span>{new Date(heroItem.timestamp).toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <button
-            onClick={onOpenReportModal}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF5E3A] via-[#FF7A00] to-[#7000FF] text-white font-extrabold text-sm flex items-center justify-center gap-2.5 hover:brightness-110 shadow-glow-orange transition-all active:scale-95 flex-shrink-0"
-          >
-            <Camera className="w-5 h-5" />
-            <span>Fast-Log Camera Mode</span>
-          </button>
         </div>
-      </div>
+      )}
 
-      {/* Search & Filter Toolbar */}
+      {/* 2. Apple Controls Bar: Search, Segmented LOST/FOUND, and Category Pills */}
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {/* Search Bar */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          {/* Minimalist Search */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search by brand, item title, color, or traits..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl glass-panel text-sm text-slate-900 dark:text-white placeholder:text-slate-400 border border-slate-200 dark:border-white/10 focus:outline-none focus:border-[#FF5E3A] transition-all"
+              placeholder="Search catalog by model, brand, or color..."
+              className="w-full pl-10 pr-4 py-2 rounded-apple-pill bg-white/5 border border-hairline text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-apple-blue transition-all"
             />
           </div>
 
-          {/* Type Selector (ALL, LOST, FOUND) */}
-          <div className="flex items-center p-1 rounded-2xl glass-panel border border-slate-200 dark:border-white/10 self-center">
-            {(['ALL', 'LOST', 'FOUND'] as (ItemType | 'ALL')[]).map((t) => (
+          <div className="flex items-center gap-2.5 self-end sm:self-center">
+            {/* Segmented LOST / FOUND Toggle */}
+            <div className="flex items-center p-0.5 rounded-apple-pill bg-black/40 dark:bg-white/5 border border-hairline">
+              {(['ALL', 'LOST', 'FOUND'] as (ItemType | 'ALL')[]).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => onSelectType(t)}
+                  className={`px-3 py-1 rounded-apple-pill text-xs font-medium transition-all ${
+                    selectedType === t
+                      ? 'bg-white text-black font-semibold shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            {/* View Switcher: Bento Grid vs 3D Stack */}
+            <div className="flex items-center p-0.5 rounded-apple-pill bg-black/40 dark:bg-white/5 border border-hairline">
               <button
-                key={t}
-                onClick={() => onSelectType(t)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  selectedType === t
-                    ? t === 'LOST'
-                      ? 'bg-[#FF5E3A] text-white shadow-glow-orange'
-                      : t === 'FOUND'
-                      ? 'bg-[#00E599] text-slate-950 font-extrabold shadow-glow-emerald'
-                      : 'bg-white/20 dark:bg-white/20 text-white'
+                onClick={() => setViewMode('BENTO')}
+                className={`p-1.5 rounded-apple-pill text-xs transition-all ${
+                  viewMode === 'BENTO'
+                    ? 'bg-white text-black'
                     : 'text-slate-400 hover:text-white'
                 }`}
+                title="Apple Bento Grid"
               >
-                {t}
+                <LayoutGrid className="w-3.5 h-3.5" />
               </button>
-            ))}
-          </div>
-
-          {/* View Mode Toggle (3D Stack vs Grid) */}
-          <div className="flex items-center p-1 rounded-2xl glass-panel border border-slate-200 dark:border-white/10 self-center">
-            <button
-              onClick={() => setViewMode('3D')}
-              aria-label="3D Stack View"
-              className={`p-2 rounded-xl text-xs font-bold transition-all ${
-                viewMode === '3D'
-                  ? 'bg-gradient-to-r from-[#7000FF] to-[#00E599] text-white shadow-glow-violet'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-              title="3D Card Stack Carousel"
-            >
-              <Layers className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('GRID')}
-              aria-label="Grid View"
-              className={`p-2 rounded-xl text-xs font-bold transition-all ${
-                viewMode === 'GRID'
-                  ? 'bg-gradient-to-r from-[#7000FF] to-[#00E599] text-white shadow-glow-violet'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-              title="Modern Grid View"
-            >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
+              <button
+                onClick={() => setViewMode('3D')}
+                className={`p-1.5 rounded-apple-pill text-xs transition-all ${
+                  viewMode === '3D'
+                    ? 'bg-white text-black'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+                title="3D Spatial Stack"
+              >
+                <Layers className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Category Horizontal Scroll Pills */}
+        {/* Category Filter Horizontal Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat;
@@ -164,10 +223,10 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
               <button
                 key={cat}
                 onClick={() => onSelectCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
+                className={`px-4 py-1.5 rounded-apple-pill text-xs font-medium whitespace-nowrap transition-all border ${
                   isSelected
-                    ? 'bg-gradient-to-r from-[#FF5E3A] to-[#7000FF] text-white border-transparent shadow-glow-orange/30'
-                    : 'glass-panel text-slate-400 hover:text-slate-200 border-slate-200 dark:border-white/10 hover:border-white/25'
+                    ? 'bg-white text-black border-transparent font-semibold shadow-sm'
+                    : 'bg-white/5 text-slate-400 hover:text-white border-hairline'
                 }`}
               >
                 {cat}
@@ -177,68 +236,69 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
         </div>
       </div>
 
-      {/* Main Content Area */}
-      {viewMode === '3D' ? (
-        <CardStackCarousel
-          items={items}
-          onSelectItem={onSelectItem}
-          onOpenMatch={onOpenMatch}
-          userRole={userRole}
-        />
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* 3. Showcase Area: Bento Grid or 3D Showcase */}
+      {viewMode === 'BENTO' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item) => (
             <div
               key={item.id}
               onClick={() => onSelectItem(item)}
-              className="group rounded-3xl glass-panel border border-slate-200 dark:border-white/10 hover:border-[#FF5E3A]/40 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+              className="group rounded-apple-xl overflow-hidden studio-surface border border-hairline hover:border-white/25 cursor-pointer transition-all duration-300 hover:shadow-apple-glass"
             >
-              <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+              {/* Product Visual */}
+              <div className="relative h-56 w-full overflow-hidden bg-black/60">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
-                  className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0E14] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
+                {/* Floating Apple Metadata Badges */}
                 <div className="absolute top-3 left-3 flex items-center gap-1.5">
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider backdrop-blur-md ${
+                    className={`px-2.5 py-0.5 rounded-apple-pill text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md ${
                       item.type === 'LOST'
-                        ? 'bg-[#FF5E3A] text-white shadow-glow-orange'
-                        : 'bg-[#00E599] text-slate-950 font-extrabold shadow-glow-emerald'
+                        ? 'bg-tesla-crimson text-white'
+                        : 'bg-telemetry-emerald text-black font-black'
                     }`}
                   >
                     {item.type}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold text-white bg-black/60 backdrop-blur-md border border-white/15">
+                  <span className="px-2.5 py-0.5 rounded-apple-pill text-[10px] font-mono text-slate-300 bg-black/60 backdrop-blur-md border border-hairline">
                     {item.category}
                   </span>
                 </div>
 
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-slate-300 bg-black/50 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/10">
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono text-slate-300">
+                  <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-hairline">
                     {item.status.replace(/_/g, ' ')}
                   </span>
                   {item.lockerId && (
-                    <span className="text-[10px] font-mono text-emerald-400 bg-black/50 px-2 py-0.5 rounded-md backdrop-blur-sm">
-                      🔒 {item.lockerId}
+                    <span className="px-2 py-0.5 rounded-md bg-telemetry-emerald/20 text-telemetry-emerald font-bold border border-telemetry-emerald/30">
+                      {item.lockerId}
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="p-4 space-y-2">
-                <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">
-                  {item.title}
-                </h3>
-                <div className="flex items-center justify-between text-[11px] text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-[#00E599]" />
-                    {getBuildingName(item.buildingId)}
+              {/* Bento Card Body */}
+              <div className="p-5 space-y-3">
+                <div>
+                  <h3 className="text-base font-bold text-white tracking-tight line-clamp-1 group-hover:text-apple-blue transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {item.brand} • <span className="capitalize">{item.color}</span>
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-hairline">
+                  <span className="flex items-center gap-1 truncate">
+                    <MapPin className="w-3.5 h-3.5 text-telemetry-emerald flex-shrink-0" />
+                    <span className="truncate">{getBuildingName(item.buildingId)}</span>
                   </span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3 text-[#FF5E3A]" />
+                  <span className="font-mono text-[11px] flex-shrink-0">
                     {new Date(item.timestamp).toLocaleDateString()}
                   </span>
                 </div>
@@ -246,6 +306,13 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = ({
             </div>
           ))}
         </div>
+      ) : (
+        <CardStackCarousel
+          items={items}
+          onSelectItem={onSelectItem}
+          onOpenMatch={onOpenMatch}
+          userRole={userRole}
+        />
       )}
     </div>
   );

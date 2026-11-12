@@ -1,92 +1,68 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  handle        String
-  role          String
-  department    String?
-  verifiedBadge Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  items         Item[]   @relation("UserItems")
-  claims        Claim[]
-  messages      ChatMessage[]
-  feedbacks     Feedback[]
+  id             String  @id
+  email          String  @unique
+  handle         String
+  role           String  // STUDENT | FINDER | SECURITY | ADMIN
+  department     String
+  verifiedBadge  Boolean @default(true)
 }
 
 model Item {
-  id            String   @id @default(uuid())
-  type          String
+  id            String  @id
+  type          String  // LOST | FOUND
   title         String
-  category      String
-  brand         String?
-  color         String?
-  imageUrl      String?
-  buildingId    String?
-  coords        String?
-  timestamp     DateTime @default(now())
-  status        String
+  category      String  // Electronics | Wallets/Bags | Keys | Identification | Apparel | Books
+  brand         String
+  color         String
+  imageUrl      String
+  buildingId    String
+  coords        String  // JSON string: {x, y, lat, lng}
+  timestamp     String
+  status        String  // REPORTED | LOGGED_IN_DEPOT | MATCH_SUGGESTED | CLAIM_PENDING | VERIFICATION_APPROVED | AWAITING_PICKUP | RETURNED | UNCLAIMED_ARCHIVE | AUCTION_DONATED
   lockerId      String?
-  retentionDays Int
-  expiresAt     DateTime?
-  sensitive     String?
-  reporterId    String?
-  reporter      User?    @relation("UserItems", fields: [reporterId], references: [id])
-  claims        Claim[]
-  messages      ChatMessage[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  retentionDays Int     @default(30)
+  expiresAt     String
+  sensitive     String  // JSON string: { serialNumber, privateTraits, walletContents, finderPhone }
 }
 
 model Claim {
-  id           String   @id @default(uuid())
-  itemId       String
-  item         Item     @relation(fields: [itemId], references: [id])
-  claimantId   String
-  claimant     User     @relation(fields: [claimantId], references: [id])
-  secretAnswer String?
+  id            String  @id
+  itemId        String
+  claimantId    String
+  secretAnswer  String
   proofImageUrl String?
-  status       String
-  fraudFlags   String?
-  qrToken      String?
-  otpCode      String?
-  otpExpiresAt DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  feedback     Feedback?
+  status        String  // PENDING | EVIDENCE_REQUESTED | APPROVED | DENIED
+  fraudFlags    String  // JSON string array
+  qrToken       String?
+  otpCode       String?
+  otpExpiresAt  String?
+  createdAt     String
 }
 
 model ChatMessage {
-  id        String   @id @default(uuid())
-  itemId    String
-  item      Item     @relation(fields: [itemId], references: [id])
-  senderId  String?
-  sender    User?    @relation(fields: [senderId], references: [id])
-  message   String
-  createdAt DateTime @default(now())
+  id             String  @id
+  itemId         String
+  senderId       String
+  senderRole     String
+  senderHandle   String
+  message        String
+  timestamp      String
+  scrubbedNotice Boolean @default(false)
 }
 
 model Feedback {
-  id        String   @id @default(uuid())
-  claimId   String   @unique
-  claim     Claim    @relation(fields: [claimId], references: [id])
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
+  id        String @id
+  claimId   String
   rating    Int
-  comment   String?
-  createdAt DateTime @default(now())
-}
-
-model AnalyticsEvent {
-  id        String   @id @default(uuid())
-  type      String
-  payload   String?
-  createdAt DateTime @default(now())
+  comment   String
+  createdAt String
 }

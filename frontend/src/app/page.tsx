@@ -31,11 +31,10 @@ import { CustodyAnalyticsView } from '../components/analytics/CustodyAnalyticsVi
 import { FeedbackModal } from '../components/feedback/FeedbackModal';
 
 export default function Home() {
-  // Current logged in demo user
   const [currentUser, setCurrentUser] = useState<User>(DEMO_USERS.STUDENT);
   const [activeTab, setActiveTab] = useState<ActiveTab>('DISCOVERY');
 
-  // Core Data State
+  // Core Data
   const [items, setItems] = useState<Item[]>([]);
   const [claims, setClaims] = useState<Claim[]>([]);
   const [hotspots, setHotspots] = useState<HotspotZone[]>([]);
@@ -46,38 +45,37 @@ export default function Home() {
   const [selectedType, setSelectedType] = useState<ItemType | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Modals & Drawers
+  // Modals
   const [isGatekeeperOpen, setIsGatekeeperOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  
-  // AI Match Drawer State
+
+  // AI Match Drawer
   const [isMatchDrawerOpen, setIsMatchDrawerOpen] = useState(false);
   const [matchTargetItem, setMatchTargetItem] = useState<Item | null>(null);
   const [currentMatchResult, setCurrentMatchResult] = useState<MatchResult | null>(null);
 
-  // Claim Submission Modal State
+  // Claim Modal
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const [claimTargetItem, setClaimTargetItem] = useState<Item | null>(null);
 
-  // Relay Chat Modal State
+  // Chat Modal
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatTargetItem, setChatTargetItem] = useState<Item | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
-  // Feedback Modal State
+  // Feedback Modal
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackClaimId, setFeedbackClaimId] = useState<string | null>(null);
 
-  // Toast Notification
+  // Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
-  // Initial Data Load
   const refreshData = async () => {
     const loadedItems = await api.getItems(
       {
@@ -103,7 +101,6 @@ export default function Home() {
     refreshData();
   }, [selectedCategory, selectedType, searchQuery, currentUser.role]);
 
-  // Persona switching
   const handleRoleChange = (role: UserRole) => {
     const newUser = DEMO_USERS[role] || {
       id: `usr_${role.toLowerCase()}`,
@@ -114,22 +111,19 @@ export default function Home() {
       verifiedBadge: true,
     };
     setCurrentUser(newUser);
-    showToast(`Switched Persona to: ${role} mode`);
+    showToast(`Role switched to: ${role}`);
   };
 
-  // Auth Login Handler
   const handleGatekeeperLogin = async (email: string, role: UserRole) => {
     const res = await api.login(email, role);
     setCurrentUser(res.user);
-    showToast(`Gatekeeper Authenticated as ${res.user.handle} (${role})`);
+    showToast(`Authenticated as ${res.user.handle} (${role})`);
   };
 
-  // Handle Item Report
   const handleCreateItem = async (newItemData: Omit<Item, 'id' | 'timestamp' | 'status'>) => {
     const res = await api.createItem(newItemData, currentUser.role);
     await refreshData();
-    showToast(`Item "${res.item.title}" successfully registered in Campus Depot!`);
-    
+    showToast(`Item "${res.item.title}" registered in Depot`);
     if (res.matches && res.matches.length > 0) {
       setMatchTargetItem(res.item);
       setCurrentMatchResult(res.matches[0]);
@@ -137,43 +131,37 @@ export default function Home() {
     }
   };
 
-  // Open Match Drawer for an item
   const handleOpenMatch = async (item: Item) => {
     setMatchTargetItem(item);
     const matches = await api.getItemMatches(item.id, currentUser.role);
     if (matches.length > 0) {
       setCurrentMatchResult(matches[0]);
     } else {
-      // Generate synthetic AI match breakdown
       setCurrentMatchResult({
         lostItemId: item.id,
         foundItemId: 'cand_auto_match',
         totalScore: 92,
         breakdown: { visual: 94, category: 100, location: 90, time: 85 },
         explanation: [
-          `AI Multimodal vision detected 94% contour and silhouette identity.`,
-          `Matching building quadrant: Detected within same campus transit corridor.`,
-          `Feature embeddings correlate with high confidence.`,
+          `AI Multimodal vision detected 94% contour and silhouette correlation.`,
+          `Building quadrant match along campus walking transit path.`,
         ],
       });
     }
     setIsMatchDrawerOpen(true);
   };
 
-  // Open Claim Modal
   const handleOpenClaim = (item: Item) => {
     setClaimTargetItem(item);
     setIsClaimModalOpen(true);
   };
 
-  // Submit Claim
   const handleSubmitClaim = async (data: { itemId: string; secretAnswer: string; proofImageUrl?: string }) => {
     const newClaim = await api.createClaim(data, currentUser.role);
     await refreshData();
-    showToast(`Claim #${newClaim.id} submitted! Security Depot alerted for verification.`);
+    showToast(`Claim #${newClaim.id} logged with Anti-Fraud Guard`);
   };
 
-  // Review Claim by Security
   const handleReviewClaim = async (
     claimId: string,
     action: 'APPROVE' | 'REQUEST_EVIDENCE' | 'DENY',
@@ -181,10 +169,9 @@ export default function Home() {
   ) => {
     await api.reviewClaim(claimId, action, lockerId, currentUser.role);
     await refreshData();
-    showToast(`Claim #${claimId} status updated: ${action}`);
+    showToast(`Claim #${claimId}: ${action}`);
   };
 
-  // Contactless QR Handover Verification
   const handleVerifyHandover = async (data: { claimId?: string; qrToken?: string; otpCode?: string }) => {
     const res = await api.verifyHandover(data, currentUser.role);
     await refreshData();
@@ -192,7 +179,6 @@ export default function Home() {
     return res;
   };
 
-  // Chat triggers
   const handleOpenChat = async (item: Item) => {
     setChatTargetItem(item);
     const msgs = await api.getChat(item.id, currentUser.role);
@@ -207,7 +193,6 @@ export default function Home() {
     return newMsg;
   };
 
-  // 1-Click CSV Audit Export
   const handleExportCsv = () => {
     const csvContent = api.getAuditExportCsv();
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -218,10 +203,9 @@ export default function Home() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast('Regulatory CSV Audit Log downloaded successfully.');
+    showToast('Audit CSV downloaded');
   };
 
-  // Feedback Trigger
   const handleFeedbackTrigger = (claimId: string) => {
     setFeedbackClaimId(claimId);
     setIsFeedbackOpen(true);
@@ -229,28 +213,29 @@ export default function Home() {
 
   const handleSubmitFeedback = async (data: { claimId: string; rating: number; comment: string }) => {
     await api.submitFeedback(data, currentUser.role);
-    showToast('Feedback recorded. Thank you for making our campus safer!');
+    showToast('Recovery feedback logged');
   };
 
   const pendingClaimsCount = claims.filter((c) => c.status === 'PENDING').length;
-  const matchAlertsCount = items.filter((i) => i.status === 'MATCH_SUGGESTED').length;
 
   return (
-    <main className="min-h-screen relative flex flex-col bg-[#F8FAFC] dark:bg-[#0B0E14] transition-colors">
-      {/* Top Navbar */}
+    <main className="min-h-screen relative flex flex-col bg-[#F5F5F7] dark:bg-[#000000] text-slate-900 dark:text-slate-100 transition-colors">
+      {/* 1. Apple-Style Glass Top Header */}
       <Navbar
         currentUser={currentUser}
         onOpenReportModal={() => setIsReportModalOpen(true)}
         onOpenGatekeeper={() => setIsGatekeeperOpen(true)}
+        onRoleChange={handleRoleChange}
       />
 
-      {/* Main Body Content Views */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6">
+      {/* Main Body Content */}
+      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8">
         {activeTab === 'DISCOVERY' && (
           <DiscoveryView
             items={items}
             onSelectItem={(item) => setSelectedItem(item)}
             onOpenMatch={handleOpenMatch}
+            onOpenClaim={handleOpenClaim}
             onOpenReportModal={() => setIsReportModalOpen(true)}
             userRole={currentUser.role}
             selectedCategory={selectedCategory}
@@ -305,14 +290,13 @@ export default function Home() {
         )}
       </div>
 
-      {/* Floating Island Bottom Dock */}
+      {/* 2. Apple Minimalist Floating Pill Dock */}
       <BottomDock
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        onOpenReportModal={() => setIsReportModalOpen(true)}
         currentRole={currentUser.role}
-        onRoleChange={handleRoleChange}
         pendingClaimsCount={pendingClaimsCount}
-        matchAlertsCount={matchAlertsCount}
       />
 
       {/* Modals & Drawers */}
@@ -371,10 +355,10 @@ export default function Home() {
         onSubmitFeedback={handleSubmitFeedback}
       />
 
-      {/* Floating Notification Toast */}
+      {/* Apple-style floating toast */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-2xl glass-panel-heavy border border-white/20 text-white text-xs font-semibold shadow-2xl flex items-center gap-2 animate-bounce">
-          <span className="w-2 h-2 rounded-full bg-[#00E599] animate-pulse" />
+        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-apple-pill bg-black/80 dark:bg-white/90 text-white dark:text-black text-xs font-medium border border-hairline shadow-2xl flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-apple-blue" />
           <span>{toastMessage}</span>
         </div>
       )}

@@ -7,7 +7,6 @@ export const ThemeToggle: React.FC = () => {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    // Check initial preference
     const root = document.documentElement;
     if (localStorage.getItem('findit-theme') === 'light') {
       root.classList.remove('dark');
@@ -35,9 +34,14 @@ export const ThemeToggle: React.FC = () => {
     <button
       onClick={toggleTheme}
       aria-label="Toggle Theme"
-      className="p-2.5 rounded-2xl glass-panel text-slate-600 dark:text-slate-300 hover:text-amber-500 dark:hover:text-amber-400 transition-all active:scale-95"
+      className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white dark:hover:text-white transition-colors border border-hairline hover:bg-white/10 dark:hover:bg-white/10"
+      title={isDark ? 'Switch to Studio Light' : 'Switch to Deep Obsidian'}
     >
-      {isDark ? <Sun className="w-4 h-4 text-amber-400 animate-spin-slow" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+      {isDark ? (
+        <Sun className="w-3.5 h-3.5 text-amber-400" />
+      ) : (
+        <Moon className="w-3.5 h-3.5 text-slate-800" />
+      )}
     </button>
   );
 };

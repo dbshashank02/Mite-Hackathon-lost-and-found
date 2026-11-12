@@ -1,5 +1,4 @@
 node_modules/
-*.db
-*.db-journal
-__pycache__/
-.venv/
+dev.db
+dev.db-journal
+.env

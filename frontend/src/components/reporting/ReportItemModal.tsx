@@ -5,13 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
   Camera,
-  Upload,
   Lock,
   Sparkles,
   MapPin,
-  CheckCircle,
-  ShieldCheck,
+  CheckCircle2,
   AlertCircle,
+  Upload,
 } from 'lucide-react';
 import { Item, ItemCategory, ItemType, UserRole } from '../../types';
 import { CAMPUS_BUILDINGS } from '../../lib/mockData';
@@ -36,7 +35,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
   const [color, setColor] = useState('Space Gray');
   const [buildingId, setBuildingId] = useState(CAMPUS_BUILDINGS[0].id);
   const [imageUrl, setImageUrl] = useState(
-    'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80'
+    'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800'
   );
   const [retentionDays, setRetentionDays] = useState<30 | 60 | 90>(30);
 
@@ -60,24 +59,14 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
     'Books',
   ];
 
-  const colorPresets = [
-    { label: 'Space Gray', hex: '#4B5563' },
-    { label: 'Midnight Black', hex: '#111827' },
-    { label: 'Silver / White', hex: '#E5E7EB' },
-    { label: 'Caramel Tan', hex: '#D97706' },
-    { label: 'Navy Blue', hex: '#1E3A8A' },
-    { label: 'Forest Green', hex: '#065F46' },
-    { label: 'Crimson Red', hex: '#DC2626' },
-  ];
-
   const handleSimulateFastCapture = () => {
     setFastLogCameraActive(true);
     setTimeout(() => {
       setFastLogCameraActive(false);
       setImageUrl(
-        'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80'
+        'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800'
       );
-    }, 1200);
+    }, 1000);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -92,7 +81,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
         type,
         title,
         category,
-        brand: brand || 'Unbranded',
+        brand: brand || 'Unspecified',
         color,
         imageUrl,
         buildingId,
@@ -119,121 +108,111 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl overflow-y-auto">
         <motion.div
-          initial={{ opacity: 0, scale: 0.93, y: 20 }}
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.93, y: 20 }}
-          className="relative w-full max-w-2xl rounded-4xl glass-panel-heavy p-6 sm:p-8 shadow-2xl border border-white/15 my-8 max-h-[90vh] overflow-y-auto"
+          exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          className="relative w-full max-w-xl rounded-apple-2xl studio-surface border border-hairline p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
         >
-          {/* Close button */}
+          {/* Close Pill */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+            className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
           {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF5E3A] via-[#7000FF] to-[#00E599] p-[2px]">
-              <div className="w-full h-full bg-[#0B0E14] rounded-2xl flex items-center justify-center">
-                <Camera className="w-6 h-6 text-[#00E599]" />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-xl font-extrabold text-white tracking-tight">
-                Rapid Reporting Flow
-              </h2>
-              <p className="text-xs text-slate-400">
-                Log a Lost or Misplaced Item with AI Vision & Privacy Shielding
-              </p>
-            </div>
+          <div className="mb-6">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-apple-blue font-bold block mb-1">
+              FAST-LOG TELEMETRY
+            </span>
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              Log Campus Inventory
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Rapid intake with AI vision hashing and zero-exposure encrypted traits.
+            </p>
           </div>
 
-          <form onSubmit={handleFormSubmit} className="space-y-6">
-            {/* Type Switcher */}
+          <form onSubmit={handleFormSubmit} className="space-y-5">
+            {/* Type Segmented Pill */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Report Type
+              <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1.5">
+                Catalog Direction
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 p-1 rounded-apple-pill bg-black/50 border border-hairline">
                 <button
                   type="button"
                   onClick={() => setType('LOST')}
-                  className={`py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 border ${
+                  className={`py-2 rounded-apple-pill text-xs font-semibold transition-all ${
                     type === 'LOST'
-                      ? 'bg-[#FF5E3A] text-white border-transparent shadow-glow-orange'
-                      : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10'
+                      ? 'bg-tesla-crimson text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  <AlertCircle className="w-4 h-4" />
-                  <span>I Lost Something</span>
+                  I Lost An Item
                 </button>
                 <button
                   type="button"
                   onClick={() => setType('FOUND')}
-                  className={`py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 border ${
+                  className={`py-2 rounded-apple-pill text-xs font-semibold transition-all ${
                     type === 'FOUND'
-                      ? 'bg-[#00E599] text-slate-950 font-extrabold border-transparent shadow-glow-emerald'
-                      : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10'
+                      ? 'bg-telemetry-emerald text-black font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  <CheckCircle className="w-4 h-4" />
-                  <span>I Found an Item</span>
+                  I Found An Item
                 </button>
               </div>
             </div>
 
-            {/* Fast-Log Camera / Photo Upload Simulator */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Item Photo (Fast-Log Camera Mode)
+            {/* Camera Dropzone */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-mono text-slate-400 block">
+                Visual Capture
               </label>
-              <div className="relative rounded-3xl overflow-hidden border border-dashed border-white/20 bg-white/5 p-4 flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative w-32 h-32 rounded-2xl overflow-hidden bg-slate-900 flex-shrink-0 border border-white/10">
+              <div className="p-4 rounded-apple-xl bg-black/50 border border-dashed border-hairline flex items-center gap-4">
+                <div className="relative w-20 h-20 rounded-apple-md overflow-hidden bg-slate-900 border border-hairline flex-shrink-0">
                   <img
                     src={imageUrl}
                     alt="Preview"
                     className="w-full h-full object-cover"
                   />
                   {fastLogCameraActive && (
-                    <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-emerald-400">
-                      <Camera className="w-6 h-6 animate-pulse mb-1" />
-                      <span className="text-[10px] font-mono">Calibrating...</span>
+                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-[10px] font-mono text-apple-blue">
+                      Calibrating...
                     </div>
                   )}
                 </div>
 
-                <div className="flex-1 text-center sm:text-left space-y-2">
-                  <p className="text-xs text-slate-300 font-medium">
-                    Upload or snap a clear photo. AI vision extracts geometry and color signatures.
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2">
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={handleSimulateFastCapture}
-                      className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition-all"
+                      className="px-3.5 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all"
                     >
-                      <Camera className="w-3.5 h-3.5 text-[#00E599]" />
-                      <span>Snap Fast-Log Photo</span>
+                      <Camera className="w-3.5 h-3.5 text-apple-blue" />
+                      <span>Snap Photo</span>
                     </button>
-                    <input
-                      type="text"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="Or paste image URL"
-                      className="flex-1 min-w-[180px] px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-500"
-                    />
                   </div>
+                  <input
+                    type="text"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="Or paste image URL..."
+                    className="w-full px-3 py-1.5 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Structured Taxonomy & Title */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Title & Taxonomy */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1">
                   Item Title
                 </label>
                 <input
@@ -241,19 +220,19 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. MacBook Pro 14, Leather Wallet"
-                  className="w-full px-4 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[#FF5E3A]"
+                  placeholder="e.g. MacBook Pro 14, Bifold Wallet"
+                  className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Category Taxonomy
+                <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1">
+                  Category
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as ItemCategory)}
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[#121824] border border-white/10 text-white text-sm focus:outline-none focus:border-[#FF5E3A]"
+                  className="w-full px-3.5 py-2 rounded-apple-md bg-[#111114] border border-hairline text-white text-xs focus:outline-none focus:border-apple-blue"
                 >
                   {categories.map((c) => (
                     <option key={c} value={c}>
@@ -264,155 +243,98 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
               </div>
             </div>
 
-            {/* Brand & Color Swatch Picker */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Brand, Color, Building Pin */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Brand / Manufacturer
+                <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1">
+                  Brand / Model
                 </label>
                 <input
                   type="text"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
-                  placeholder="e.g. Apple, Bellroy, Sony, Nike"
-                  className="w-full px-4 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[#00E599]"
+                  placeholder="Apple, Sony, Bellroy"
+                  className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Color / Finish
+                <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1">
+                  Color
                 </label>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    {colorPresets.map((c) => (
-                      <button
-                        key={c.label}
-                        type="button"
-                        onClick={() => setColor(c.label)}
-                        className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                          color === c.label ? 'scale-125 border-white ring-2 ring-[#00E599]' : 'border-white/20'
-                        }`}
-                        style={{ backgroundColor: c.hex }}
-                        title={c.label}
-                      />
-                    ))}
-                  </div>
-                  <input
-                    type="text"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    className="w-28 px-2 py-1 rounded-xl bg-white/5 border border-white/10 text-white text-xs"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  placeholder="Space Gray, Black, Tan"
+                  className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                />
               </div>
-            </div>
 
-            {/* Building Pin Selector & Retention Days */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#00E599]" />
-                  <span>Campus Building Pin</span>
+                <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1">
+                  Campus Pin
                 </label>
                 <select
                   value={buildingId}
                   onChange={(e) => setBuildingId(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[#121824] border border-white/10 text-white text-sm focus:outline-none focus:border-[#00E599]"
+                  className="w-full px-3.5 py-2 rounded-apple-md bg-[#111114] border border-hairline text-white text-xs focus:outline-none focus:border-apple-blue"
                 >
                   {CAMPUS_BUILDINGS.map((b) => (
                     <option key={b.id} value={b.id}>
-                      {b.name} ({b.code})
+                      {b.code} ({b.name})
                     </option>
                   ))}
                 </select>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Custody Retention Policy
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {([30, 60, 90] as (30 | 60 | 90)[]).map((days) => (
-                    <button
-                      key={days}
-                      type="button"
-                      onClick={() => setRetentionDays(days)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
-                        retentionDays === days
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
-                          : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10'
-                      }`}
-                    >
-                      {days} Days
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
 
-            {/* HIGHLIGHTED HIDDEN INPUT FOR "Private Distinctive Traits" */}
-            <div className="p-4 rounded-3xl bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-emerald-500/10 border-2 border-amber-500/40 relative">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Lock className="w-4 h-4 text-amber-400" />
-                  Private Distinctive Traits (Anti-Fraud Proof)
+            {/* Dedicated Encrypted "Private Distinctive Traits" Box */}
+            <div className="p-4 rounded-apple-xl bg-black/70 border border-hairline space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-tesla-crimson" />
+                  <span>Private Distinctive Traits (Zero-Exposure Shield)</span>
                 </span>
-                <span className="text-[10px] text-amber-300 font-mono bg-amber-500/20 px-2 py-0.5 rounded-full">
-                  SHIELDED AT REST
+                <span className="text-[9px] font-mono text-telemetry-emerald">
+                  ENCRYPTED AT REST
                 </span>
               </div>
-              <p className="text-[11px] text-slate-300 mb-2">
-                Specify subtle details (scratches, stickers, engravings, contents) known only to the true owner.
-                This is strictly masked behind the frosted shield and verified during claim review.
+              <p className="text-[11px] text-slate-400">
+                Provide private identifying marks (stickers, scratches, serial hints, contents) known only to the true owner.
               </p>
               <textarea
                 required
                 rows={2}
                 value={privateTraits}
                 onChange={(e) => setPrivateTraits(e.target.value)}
-                placeholder="e.g. Holographic GitHub sticker on bottom lid, scratched corner, exact cash denominations..."
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-900/80 border border-amber-500/30 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-400 transition-all font-mono"
+                placeholder="e.g. Holographic GitHub sticker on lid, minor scratch on left bezel..."
+                className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs font-mono placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
               />
             </div>
 
-            {/* Other Sensitive Fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                  Serial Number (Masked)
-                </label>
-                <input
-                  type="text"
-                  value={serialNumber}
-                  onChange={(e) => setSerialNumber(e.target.value)}
-                  placeholder="e.g. C02G4050MD6M"
-                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono placeholder:text-slate-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                  Finder Phone (Redacted)
-                </label>
-                <input
-                  type="text"
-                  value={finderPhone}
-                  onChange={(e) => setFinderPhone(e.target.value)}
-                  placeholder="+1 (555) 000-0000"
-                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono placeholder:text-slate-500"
-                />
-              </div>
+            {/* Hardware Serial Number */}
+            <div>
+              <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1">
+                Hardware Serial Number (Optional Masked)
+              </label>
+              <input
+                type="text"
+                value={serialNumber}
+                onChange={(e) => setSerialNumber(e.target.value)}
+                placeholder="e.g. C02G4050MD6M"
+                className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white font-mono text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+              />
             </div>
 
             {/* Submit CTA */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FF5E3A] via-[#7000FF] to-[#00E599] text-white font-extrabold text-sm hover:brightness-110 shadow-glow-orange transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-apple-pill bg-white text-black font-semibold text-xs sm:text-sm hover:bg-slate-200 transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>{isSubmitting ? 'Hashing & Running AI Match...' : 'Publish Item to Campus Depot'}</span>
+              <Sparkles className="w-4 h-4 text-apple-blue" />
+              <span>{isSubmitting ? 'Registering...' : 'Register Item to Campus Depot'}</span>
             </button>
           </form>
         </motion.div>

@@ -1,260 +1,254 @@
-from __future__ import annotations
-
 import math
 import re
-from collections import Counter
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-
+from typing import List, Optional, Dict, Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-app = FastAPI(title="FindIt AI Engine")
+app = FastAPI(title="FindIt Campus AI Engine", version="1.0.0")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5000", "*"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-class ScoreRequest(BaseModel):
-    targetItem: Dict[str, Any]
-    candidateItems: List[Dict[str, Any]] = Field(default_factory=list)
-
-
-class HotspotRequest(BaseModel):
-    items: List[Dict[str, Any]] = Field(default_factory=list)
-
-
-def tokenize(item: Dict[str, Any]) -> List[str]:
-    parts = [
-        item.get("title", ""),
-        item.get("category", ""),
-        item.get("brand", ""),
-        item.get("color", ""),
-        item.get("description", ""),
-    ]
-    sensitive = item.get("sensitive") or {}
-    if isinstance(sensitive, dict):
-        parts.extend([str(v) for v in sensitive.values() if v and v != "REDACTED"])
-    text = " ".join(str(p) for p in parts if p).lower()
-    return re.findall(r"[a-z0-9]+", text)
-
-
-def tfidf_cosine(a: List[str], b: List[str]) -> float:
-    if not a or not b:
-        return 0.0
-    ca, cb = Counter(a), Counter(b)
-    vocab = set(ca) | set(cb)
-    dot = sum(ca[t] * cb[t] for t in vocab)
-    na = math.sqrt(sum(v * v for v in ca.values()))
-    nb = math.sqrt(sum(v * v for v in cb.values()))
-    if na == 0 or nb == 0:
-        return 0.0
-    return dot / (na * nb)
-
-
-def jaccard(a: List[str], b: List[str]) -> float:
-    sa, sb = set(a), set(b)
-    if not sa or not sb:
-        return 0.0
-    return len(sa & sb) / len(sa | sb)
-
-
-def parse_time(value: Any) -> Optional[datetime]:
-    if not value:
-        return None
-    if isinstance(value, (int, float)):
-        try:
-            return datetime.fromtimestamp(float(value) / 1000.0)
-        except Exception:
-            return None
-    s = str(value)
-    try:
-        return datetime.fromisoformat(s.replace("Z", "+00:00")).replace(tzinfo=None)
-    except Exception:
-        pass
-    for fmt in ("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"):
-        try:
-            return datetime.strptime(s[:26], fmt)
-        except Exception:
-            continue
-    return None
-
-
-def coords(item: Dict[str, Any]):
-    c = item.get("coords") or {}
-    try:
-        return float(c.get("x", 0)), float(c.get("y", 0)), c.get("lat"), c.get("lng")
-    except Exception:
-        return 0.0, 0.0, None, None
-
-
-def haversine_m(lat1, lon1, lat2, lon2) -> float:
-    R = 6371000.0
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dl = math.radians(lon2 - lon1)
-    a = math.sin(dphi / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-
-def location_score(target: Dict[str, Any], cand: Dict[str, Any]) -> float:
-    tx, ty, tlat, tlng = coords(target)
-    cx, cy, clat, clng = coords(cand)
-    dist = None
-    if tlat is not None and tlng is not None and clat is not None and clng is not None:
-        try:
-            dist = haversine_m(float(tlat), float(tlng), float(clat), float(clng))
-        except Exception:
-            dist = None
-    if dist is None:
-        dist = math.sqrt((tx - cx) ** 2 + (ty - cy) ** 2)
-    if dist <= 50:
-        return 100.0
-    if dist >= 1000:
-        return 0.0
-    # smooth decay 50m->1000m
-    return round(100.0 * (1 - (dist - 50) / 950) ** 1.2, 2)
-
-
-def time_score(target: Dict[str, Any], cand: Dict[str, Any]) -> float:
-    tt = parse_time(target.get("timestamp") or target.get("createdAt"))
-    ct = parse_time(cand.get("timestamp") or cand.get("createdAt"))
-    if not tt or not ct:
-        return 40.0
-    # penalize if found before reported lost
-    t_type = (target.get("type") or "").upper()
-    c_type = (cand.get("type") or "").upper()
-    lost_t, found_t = (tt, ct) if t_type == "LOST" else (ct, tt) if c_type == "LOST" else (tt, ct)
-    if found_t < lost_t:
-        return 0.0
-    delta_h = abs((ct - tt).total_seconds()) / 3600.0
-    if delta_h <= 2:
-        return 100.0
-    max_h = 14 * 24
-    if delta_h >= max_h:
-        return 0.0
-    return round(100.0 * (1 - (delta_h - 2) / (max_h - 2)) ** 1.1, 2)
-
-
-def category_score(target: Dict[str, Any], cand: Dict[str, Any]) -> float:
-    same_cat = (target.get("category") or "").lower() == (cand.get("category") or "").lower() and target.get("category")
-    cat = 100.0 if same_cat else 0.0
-    bt = tokenize({"brand": target.get("brand", ""), "title": target.get("title", "")})
-    bc = tokenize({"brand": cand.get("brand", ""), "title": cand.get("title", "")})
-    brand_sim = jaccard(bt, bc) * 100.0
-    # exact category match + brand/model token similarity
-    if same_cat:
-        return round(min(100.0, 70.0 + 30.0 * (brand_sim / 100.0)), 2)
-    return round(brand_sim * 0.4, 2)
-
-
-def visual_score(target: Dict[str, Any], cand: Dict[str, Any]) -> float:
-    ta, ca = tokenize(target), tokenize(cand)
-    tfidf = tfidf_cosine(ta, ca) * 100.0
-    # brand/color/visual-token cosine similarity emphasis
-    visual_keys = ["brand", "color", "title", "category"]
-    vt = tokenize({k: target.get(k, "") for k in visual_keys})
-    vc = tokenize({k: cand.get(k, "") for k in visual_keys})
-    vcos = tfidf_cosine(vt, vc) * 100.0
-    return round(0.5 * tfidf + 0.5 * vcos, 2)
-
-
-def build_explanations(target: Dict[str, Any], cand: Dict[str, Any], b: Dict[str, float]) -> List[str]:
-    expl = []
-    if b["visual"] >= 60:
-        expl.append(f"Strong visual/description similarity ({b['visual']:.0f}%) based on brand, color, and item details.")
-    elif b["visual"] >= 30:
-        expl.append(f"Moderate visual similarity ({b['visual']:.0f}%) in item descriptors.")
-    if b["category"] >= 70:
-        expl.append(f"Category and attributes align well ({b['category']:.0f}%).")
-    elif target.get("category") == cand.get("category"):
-        expl.append("Same item category.")
-    if b["location"] >= 70:
-        expl.append(f"Reported/found very close on campus (location score {b['location']:.0f}%).")
-    elif b["location"] >= 30:
-        expl.append(f"Locations are within a plausible campus distance ({b['location']:.0f}%).")
-    if b["time"] >= 70:
-        expl.append(f"Timestamps are close in time ({b['time']:.0f}%).")
-    elif b["time"] == 0 and parse_time(target.get("timestamp")) and parse_time(cand.get("timestamp")):
-        expl.append("Time order suggests the found time may precede the loss report (penalized).")
-    if not expl:
-        expl.append("Low overall match based on available attributes.")
-    return expl[:3]
-
-
-@app.post("/score-matches")
-def score_matches(payload: ScoreRequest):
-    target = payload.targetItem or {}
-    results = []
-    for cand in payload.candidateItems or []:
-        if cand.get("id") and target.get("id") and cand.get("id") == target.get("id"):
-            continue
-        b = {
-            "visual": visual_score(target, cand),
-            "category": category_score(target, cand),
-            "location": location_score(target, cand),
-            "time": time_score(target, cand),
-        }
-        total = round(
-            b["visual"] * 0.35 + b["category"] * 0.30 + b["location"] * 0.20 + b["time"] * 0.15,
-            2,
-        )
-        results.append(
-            {
-                "lostItemId": target.get("id") if target.get("type") == "LOST" else cand.get("id"),
-                "foundItemId": cand.get("id") if target.get("type") == "LOST" else target.get("id"),
-                "totalScore": max(0.0, min(100.0, total)),
-                "breakdown": {
-                    "visual": round(max(0.0, min(100.0, b["visual"]))),
-                    "category": round(max(0.0, min(100.0, b["category"]))),
-                    "location": round(max(0.0, min(100.0, b["location"]))),
-                    "time": round(max(0.0, min(100.0, b["time"]))),
-                },
-                "explanation": build_explanations(target, cand, b),
-            }
-        )
-    results.sort(key=lambda r: r["totalScore"], reverse=True)
-    return results
-
-
-BUILDING_NAMES = {
-    "LIB": "Main Library",
-    "ENG": "Engineering Block",
-    "CAF": "Central Cafeteria",
-    "HOST": "Hostel Complex",
-    "GYM": "Sports Center",
-    "ADMIN": "Admin Building",
-    "LAB": "Science Labs",
-    "AUD": "Auditorium",
-    "PARK": "Parking Area",
+CAMPUS_BUILDING_METADATA = {
+    "BLD_LIB": {"name": "Main Library", "code": "LIB", "x": 280, "y": 160, "lat": 12.9716, "lng": 77.5946},
+    "BLD_TECH": {"name": "Tech Park", "code": "TECH", "x": 620, "y": 180, "lat": 12.9722, "lng": 77.5960},
+    "BLD_UNION": {"name": "Student Union", "code": "STU", "x": 450, "y": 320, "lat": 12.9712, "lng": 77.5952},
+    "BLD_DINE": {"name": "Dining Hall", "code": "DINE", "x": 220, "y": 440, "lat": 12.9705, "lng": 77.5939},
+    "BLD_ARENA": {"name": "Sports Arena", "code": "SPRT", "x": 740, "y": 380, "lat": 12.9708, "lng": 77.5975},
+    "BLD_DORM": {"name": "North Dormitories", "code": "DORM", "x": 380, "y": 560, "lat": 12.9698, "lng": 77.5948},
 }
 
+class Coords(BaseModel):
+    x: Optional[float] = 0
+    y: Optional[float] = 0
+    lat: Optional[float] = 0
+    lng: Optional[float] = 0
+
+class ItemModel(BaseModel):
+    id: str
+    type: str  # "LOST" | "FOUND"
+    title: str
+    category: str
+    brand: Optional[str] = ""
+    color: Optional[str] = ""
+    imageUrl: Optional[str] = ""
+    buildingId: Optional[str] = ""
+    coords: Optional[Coords] = None
+    timestamp: Optional[str] = None
+    status: Optional[str] = None
+    lockerId: Optional[str] = None
+    retentionDays: Optional[int] = 30
+    expiresAt: Optional[str] = None
+    sensitive: Optional[Dict[str, Any]] = None
+
+class ScoreRequest(BaseModel):
+    targetItem: ItemModel
+    candidateItems: List[ItemModel]
+
+class Breakdown(BaseModel):
+    visual: int
+    category: int
+    location: int
+    time: int
+
+class MatchResult(BaseModel):
+    lostItemId: str
+    foundItemId: str
+    totalScore: int
+    breakdown: Breakdown
+    explanation: List[str]
+
+class HotspotsRequest(BaseModel):
+    items: List[ItemModel]
+
+def tokenize(text: str) -> set:
+    if not text:
+        return set()
+    cleaned = re.sub(r"[^a-zA-Z0-9\s]", " ", text.lower())
+    words = [w.strip() for w in cleaned.split() if len(w.strip()) > 1]
+    return set(words)
+
+def compute_distance_meters(c1: Optional[Coords], c2: Optional[Coords]) -> float:
+    if not c1 or not c2:
+        return 500.0
+    if c1.lat and c1.lng and c2.lat and c2.lng:
+        # Haversine distance approximation
+        d_lat = (c1.lat - c2.lat) * 111000.0
+        d_lng = (c1.lng - c2.lng) * 111000.0 * math.cos(math.radians(c1.lat))
+        return math.sqrt(d_lat * d_lat + d_lng * d_lng)
+    elif c1.x and c1.y and c2.x and c2.y:
+        dx = c1.x - c2.x
+        dy = c1.y - c2.y
+        return math.sqrt(dx * dx + dy * dy)
+    return 200.0
+
+def parse_iso_time(ts: Optional[str]) -> datetime:
+    if not ts:
+        return datetime.utcnow()
+    try:
+        cleaned = ts.replace("Z", "+00:00")
+        return datetime.fromisoformat(cleaned)
+    except Exception:
+        return datetime.utcnow()
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "FindIt Campus AI Matcher"}
+
+@app.post("/score-matches", response_model=List[MatchResult])
+def score_matches(payload: ScoreRequest):
+    target = payload.targetItem
+    results = []
+
+    target_tokens = tokenize(f"{target.title} {target.brand} {target.color}")
+    target_time = parse_iso_time(target.timestamp)
+
+    for cand in payload.candidateItems:
+        # Lost items match with Found items, or if comparing same type ignore self
+        if cand.id == target.id:
+            continue
+
+        cand_tokens = tokenize(f"{cand.title} {cand.brand} {cand.color}")
+
+        # 1. Visual & Description Similarity (35%)
+        # Token overlap + color match + brand match
+        union = target_tokens.union(cand_tokens)
+        intersection = target_tokens.intersection(cand_tokens)
+        token_sim = (len(intersection) / len(union) * 100) if union else 40.0
+
+        color_match = (
+            target.color
+            and cand.color
+            and (target.color.lower() in cand.color.lower() or cand.color.lower() in target.color.lower())
+        )
+        brand_match = (
+            target.brand
+            and cand.brand
+            and (target.brand.lower() == cand.brand.lower() or target.brand.lower() in cand.brand.lower())
+        )
+
+        visual_score = token_sim * 0.5 + (30.0 if color_match else 0.0) + (20.0 if brand_match else 0.0)
+        visual_score = max(20.0, min(100.0, visual_score))
+
+        # 2. Category & Attribute Match (30%)
+        if target.category.lower() == cand.category.lower():
+            cat_score = 90.0 + (10.0 if brand_match else 0.0)
+        else:
+            cat_score = 15.0
+        cat_score = max(0.0, min(100.0, cat_score))
+
+        # 3. Location Proximity (20%)
+        # 100% within 50m, linear decay down to 0% at 1000m
+        distance = compute_distance_meters(target.coords, cand.coords)
+        if target.buildingId and cand.buildingId and target.buildingId == cand.buildingId:
+            loc_score = 95.0
+        elif distance <= 50.0:
+            loc_score = 100.0
+        elif distance >= 1000.0:
+            loc_score = 10.0
+        else:
+            loc_score = max(10.0, 100.0 - (distance - 50.0) * (90.0 / 950.0))
+
+        # 4. Time Delta (15%)
+        # 100% within 2h, decay down to 0% at 14 days (336h)
+        cand_time = parse_iso_time(cand.timestamp)
+        diff_hours = abs((target_time - cand_time).total_seconds()) / 3600.0
+        if diff_hours <= 2.0:
+            time_score = 100.0
+        elif diff_hours >= 336.0:
+            time_score = 10.0
+        else:
+            time_score = max(10.0, 100.0 - (diff_hours - 2.0) * (90.0 / 334.0))
+
+        # Overall weighted score
+        total_score = round(
+            visual_score * 0.35 + cat_score * 0.30 + loc_score * 0.20 + time_score * 0.15
+        )
+
+        # Generate Natural-Language Explanations
+        bld_name = CAMPUS_BUILDING_METADATA.get(cand.buildingId, {}).get("name", "Campus Grounds")
+        explanations = []
+
+        if visual_score >= 70:
+            explanations.append(
+                f"Visual geometry & text descriptors correlate with {round(visual_score)}% similarity "
+                f"across brand ({cand.brand or 'Unspecified'}) and color ({cand.color or 'matching'})."
+            )
+        else:
+            explanations.append(
+                f"General taxonomy alignment on {cand.category} with partial feature match ({round(visual_score)}%)."
+            )
+
+        if target.buildingId and cand.buildingId and target.buildingId == cand.buildingId:
+            explanations.append(f"Spatial co-location: Both items originated within {bld_name} perimeter.")
+        else:
+            explanations.append(
+                f"Proximity cluster: Discovered approx. {int(distance)}m away along campus walking corridor."
+            )
+
+        if diff_hours < 24.0:
+            explanations.append(
+                f"Tight chronological window: Reported loss and recovery occur within {round(diff_hours, 1)} hours."
+            )
+        else:
+            explanations.append(
+                f"Intake logged {int(diff_hours // 24)} days apart within standard custody retention window."
+            )
+
+        lost_id = target.id if target.type == "LOST" else cand.id
+        found_id = cand.id if target.type == "LOST" else target.id
+
+        results.append(
+            MatchResult(
+                lostItemId=lost_id,
+                foundItemId=found_id,
+                totalScore=total_score,
+                breakdown=Breakdown(
+                    visual=round(visual_score),
+                    category=round(cat_score),
+                    location=round(loc_score),
+                    time=round(time_score),
+                ),
+                explanation=explanations,
+            )
+        )
+
+    # Sort descending by total score
+    results.sort(key=lambda r: r.totalScore, reverse=True)
+    return results
 
 @app.post("/hotspots")
-def hotspots(payload: HotspotRequest):
-    counts: Dict[str, int] = {}
-    for item in payload.items or []:
-        bid = item.get("buildingId") or "UNKNOWN"
-        counts[bid] = counts.get(bid, 0) + 1
-    maxc = max(counts.values()) if counts else 1
+def get_hotspots(payload: HotspotsRequest):
+    counts = {bld_id: 0 for bld_id in CAMPUS_BUILDING_METADATA}
+    
+    for item in payload.items:
+        if item.buildingId and item.buildingId in counts:
+            counts[item.buildingId] += 1
+
+    max_count = max(counts.values()) if counts and max(counts.values()) > 0 else 1
+
     zones = []
-    for bid, count in sorted(counts.items(), key=lambda kv: kv[1], reverse=True):
-        zones.append(
-            {
-                "buildingId": bid,
-                "name": BUILDING_NAMES.get(bid, f"Building {bid}"),
-                "count": count,
-                "intensity": round(count / maxc, 4) if maxc else 0.0,
-            }
-        )
+    for bld_id, meta in CAMPUS_BUILDING_METADATA.items():
+        cnt = counts.get(bld_id, 0)
+        # Intensity scaled 0.15 to 0.95
+        intensity = round(0.15 + (cnt / max_count) * 0.8, 2) if max_count > 0 else 0.2
+        zones.append({
+            "buildingId": bld_id,
+            "name": meta["name"],
+            "count": cnt,
+            "intensity": intensity,
+            "coords": {"x": meta["x"], "y": meta["y"]},
+        })
+
     return {"zones": zones}
 
-
-@app.get("/")
-def root():
-    return {"status": "ok", "service": "findit-ai-engine"}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)

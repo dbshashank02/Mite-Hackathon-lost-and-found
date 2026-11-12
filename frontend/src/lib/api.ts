@@ -344,7 +344,12 @@ export const api = {
   },
 
   async getClaims(role: UserRole = 'SECURITY'): Promise<Claim[]> {
-    return localClaims;
+    return apiRequest(
+      '/api/claims',
+      { method: 'GET' },
+      () => localClaims,
+      role
+    );
   },
 
   // Handover Verification
@@ -500,6 +505,11 @@ export const api = {
 
   // Campus Hotspots for SVG map
   async getHotspots(): Promise<HotspotZone[]> {
-    return localHotspots;
+    return apiRequest(
+      '/api/hotspots',
+      { method: 'GET' },
+      () => localHotspots,
+      'STUDENT'
+    );
   },
 };
