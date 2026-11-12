@@ -74,7 +74,6 @@ export default function FinderDashboard() {
     status: 'GENERATED',
   });
 
-  const [karmaScore, setKarmaScore] = useState(1420);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -175,12 +174,11 @@ export default function FinderDashboard() {
   const handleUnlockAndDeposit = async () => {
     if (!depositPass) return;
     setDepositPass({ ...depositPass, status: 'DEPOSITED' });
-    setKarmaScore((prev) => prev + 150);
     if (depositPass.itemId) {
       await api.updateItemStatus(depositPass.itemId, 'LOGGED_IN_DEPOT', depositPass.lockerId, 'FINDER');
       await refreshData();
     }
-    showToast(`Locker ${depositPass.lockerId} locked! +150 Samaritan Karma points credited.`);
+    showToast(`Locker ${depositPass.lockerId} locked! Item secured into depot vault.`);
   };
 
   const myLoggedItems = items.filter(
@@ -212,21 +210,21 @@ export default function FinderDashboard() {
               </p>
             </div>
 
-            {/* Impact Badge */}
+            {/* Vault Contribution Badge */}
             <div className="p-3.5 rounded-apple-xl bg-black/[0.03] dark:bg-white/[0.04] border border-hairline flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-telemetry-emerald/10 border border-telemetry-emerald/30 flex items-center justify-center text-telemetry-emerald">
                 <Award className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-[10px] font-mono uppercase text-slate-400">Impact Score</div>
+                <div className="text-[10px] font-mono uppercase text-slate-400">Vault Contributions</div>
                 <div className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>{karmaScore.toLocaleString()} Karma</span>
+                  <span>{myLoggedItems.length} Logged Items</span>
                   <span className="text-[10px] font-mono text-telemetry-emerald bg-telemetry-emerald/10 px-1.5 py-0.5 rounded-apple-pill">
-                    Tier 3 Samaritan
+                    Verified Intake
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-500 font-mono">
-                  {myLoggedItems.length} items safeguarded in campus vault
+                  Safeguarded in campus vault
                 </span>
               </div>
             </div>
@@ -593,7 +591,7 @@ export default function FinderDashboard() {
                   <li>Walk to the automated smart vault touchscreen in the Student Union bay.</li>
                   <li>Tap "Good Samaritan Deposit" and type code <strong className="text-telemetry-emerald">{depositPass?.code}</strong>.</li>
                   <li>Locker door opens automatically. Place item inside and latch the door.</li>
-                  <li>System audits locker scale weight, sends custody notification to security, and credits your Samaritan karma score!</li>
+                  <li>System audits locker scale weight, sends custody notification to security, and logs verified intake!</li>
                 </ol>
               </div>
             </div>
