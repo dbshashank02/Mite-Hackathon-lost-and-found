@@ -3,10 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, UserRole } from '../../types';
-import { useAuth, roleRouteMap } from '../../context/AuthContext';
+import { User } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 import { ThemeToggle } from '../common/ThemeToggle';
-import { LogOut, ArrowLeftRight, ShieldCheck, Activity, User as UserIcon } from 'lucide-react';
+import { LogOut, ArrowLeftRight, User as UserIcon } from 'lucide-react';
 
 interface AppHeaderProps {
   currentUser?: User | null;
@@ -19,16 +19,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   activeRoleTitle,
   badgeColor = 'text-apple-blue',
 }) => {
-  const { user: authUser, logout, quickLogin } = useAuth();
+  const { user: authUser, logout } = useAuth();
   const router = useRouter();
   const user = currentUser || authUser;
-
-  const roles: { role: UserRole; label: string }[] = [
-    { role: 'STUDENT', label: 'Student' },
-    { role: 'FINDER', label: 'Finder' },
-    { role: 'SECURITY', label: 'Security' },
-    { role: 'ADMIN', label: 'Admin' },
-  ];
 
   return (
     <header className="sticky top-0 z-50 w-full h-14 apple-header px-4 sm:px-8 flex items-center justify-between border-b border-hairline transition-colors">
@@ -50,28 +43,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           </div>
         </div>
 
-        {/* Center: Switch Portal Pill Bar (Desktop) */}
-        <div className="hidden lg:flex items-center p-1 rounded-apple-pill bg-black/40 dark:bg-white/5 border border-hairline gap-1">
-          {roles.map((r) => {
-            const isSelected = user?.role === r.role;
-            return (
-              <button
-                key={r.role}
-                onClick={() => {
-                  quickLogin(r.role);
-                }}
-                className={`px-3 py-1 rounded-apple-pill text-xs font-medium transition-all ${
-                  isSelected
-                    ? 'bg-apple-blue text-white shadow-sm font-semibold'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {r.label}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Right: Active Profile + Sign Out Button + Theme */}
         <div className="flex items-center gap-3">
           {user ? (
@@ -90,15 +61,14 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
                 </div>
               </div>
 
-              {/* Sign Out / Switch Portal Button */}
+              {/* Sign Out Button */}
               <button
                 onClick={logout}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/15 dark:bg-white/5 dark:hover:bg-white/10 border border-hairline text-slate-700 dark:text-slate-300 hover:text-white text-xs font-medium transition-all"
-                title="Sign out and return to Institutional Gatekeeper"
+                title="Sign out and return to Login"
               >
-                <ArrowLeftRight className="w-3.5 h-3.5 text-slate-400" />
-                <span className="hidden sm:inline">Switch Portal</span>
-                <LogOut className="w-3.5 h-3.5 ml-0.5 text-tesla-crimson" />
+                <LogOut className="w-3.5 h-3.5 text-tesla-crimson" />
+                <span className="hidden sm:inline">Sign Out</span>
               </button>
             </>
           ) : (

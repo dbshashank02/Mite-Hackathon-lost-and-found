@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Item,
   User,
@@ -30,7 +31,15 @@ import {
 } from 'lucide-react';
 
 export default function FinderDashboard() {
-  const { user: authUser } = useAuth();
+  const router = useRouter();
+  const { user: authUser, token, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && (!authUser || !token)) {
+      router.replace('/');
+    }
+  }, [authUser, token, isLoading, router]);
+
   const currentUser: User = authUser || DEMO_USERS.FINDER;
 
   const [items, setItems] = useState<Item[]>([]);

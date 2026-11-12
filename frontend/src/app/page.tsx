@@ -160,14 +160,6 @@ export default function LoginPage() {
           </Link>
 
           <div className="flex items-center gap-3">
-            {isAuthenticated && user && (
-              <button
-                onClick={() => router.push(roleRouteMap[user.role])}
-                className="text-xs font-semibold text-apple-blue hover:underline hidden sm:inline"
-              >
-                Return to {user.role} Hub &rarr;
-              </button>
-            )}
             <ThemeToggle />
           </div>
         </div>
@@ -431,41 +423,11 @@ export default function LoginPage() {
                 </span>
               </button>
 
-              {/* Fast 1-Click Demo Logins for Hackathon Evaluators */}
-              <div className="pt-2">
-                <span className="text-[10px] font-mono uppercase text-slate-500 font-bold block mb-2 text-center">
-                  Instant Demo Pass (1-Click Judge Access)
+              {/* SSO Notice */}
+              <div className="pt-2 text-center">
+                <span className="text-[10px] font-mono text-slate-500">
+                  Protected by 256-bit Institutional SSO Encryption &bull; FindIt Campus
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('STUDENT')}
-                    className="p-2 rounded-apple-md bg-white/5 hover:bg-white/10 border border-hairline text-center text-[10px] font-mono text-slate-300 hover:text-white transition-all truncate"
-                  >
-                    Student
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('FINDER')}
-                    className="p-2 rounded-apple-md bg-white/5 hover:bg-white/10 border border-hairline text-center text-[10px] font-mono text-slate-300 hover:text-white transition-all truncate"
-                  >
-                    Finder
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('SECURITY')}
-                    className="p-2 rounded-apple-md bg-white/5 hover:bg-white/10 border border-hairline text-center text-[10px] font-mono text-slate-300 hover:text-white transition-all truncate"
-                  >
-                    Security
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('ADMIN')}
-                    className="p-2 rounded-apple-md bg-white/5 hover:bg-white/10 border border-hairline text-center text-[10px] font-mono text-slate-300 hover:text-white transition-all truncate"
-                  >
-                    Admin
-                  </button>
-                </div>
               </div>
             </div>
           </div>

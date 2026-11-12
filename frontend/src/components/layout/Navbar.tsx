@@ -38,26 +38,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Center: Apple-Style Segmented Role Switcher Pill */}
-        <div className="hidden md:flex items-center p-0.5 rounded-apple-pill bg-black/40 dark:bg-white/5 border border-hairline">
-          {roles.map((r) => {
-            const isSelected = currentUser.role === r;
-            const label = r.charAt(0) + r.slice(1).toLowerCase();
-            return (
-              <button
-                key={r}
-                onClick={() => onRoleChange(r)}
-                className={`px-3 py-1 rounded-apple-pill text-xs font-medium transition-all ${
-                  isSelected
-                    ? 'bg-apple-blue text-white shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
 
         {/* Right Actions: Gatekeeper Profile + Theme */}
         <div className="flex items-center gap-2.5">
