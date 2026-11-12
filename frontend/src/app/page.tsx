@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -157,9 +158,13 @@ export default function GatekeeperPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="hidden md:inline text-xs font-mono text-slate-400">
-              Single Sign-On (SSO) Protected
-            </span>
+            <Link
+              href="/login"
+              className="px-3 py-1.5 rounded-apple-pill bg-apple-blue hover:bg-apple-blue/90 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5"
+            >
+              <span>Universal Login</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
             <ThemeToggle />
           </div>
         </div>

@@ -9,9 +9,12 @@ import { DEMO_USERS } from '../lib/mockData';
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, role: UserRole) => Promise<User>;
+  login: (email: string, role?: UserRole) => Promise<User>;
+  register: (email: string, name: string, role: UserRole, department?: string) => Promise<User>;
   quickLogin: (role: UserRole) => Promise<User>;
+  switchRole: (role: UserRole) => Promise<User>;
   logout: () => void;
 }
 
@@ -23,6 +26,14 @@ export const roleRouteMap: Record<UserRole, string> = {
   SECURITY: '/dashboard/security',
   ADMIN: '/dashboard/admin',
 };
+
+export function detectRoleFromEmail(email: string): UserRole {
+  const lower = email.toLowerCase();
+  if (lower.includes('admin') || lower.includes('dean') || lower.includes('provost')) return 'ADMIN';
+  if (lower.includes('security') || lower.includes('police') || lower.includes('guard')) return 'SECURITY';
+  if (lower.includes('finder') || lower.includes('samaritan')) return 'FINDER';
+  return 'STUDENT';
+}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -47,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (email: string, role: UserRole): Promise<User> => {
+  const login = async (email: string, specifiedRole?: UserRole): Promise<User> => {
+    const role = specifiedRole || detectRoleFromEmail(email);
     const res = await api.login(email, role);
     setUser(res.user);
     setToken(res.token);
@@ -56,13 +68,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('findit_token', res.token);
     } catch (e) {}
 
-    router.push(roleRouteMap[role]);
+    router.push(roleRouteMap[res.user.role || role]);
     return res.user;
+  };
+
+  const register = async (
+    email: string,
+    name: string,
+    role: UserRole,
+    department: string = 'Campus Member'
+  ): Promise<User> => {
+    const res = await api.login(email, role);
+    const updatedUser: User = {
+      ...res.user,
+      handle: name || res.user.handle,
+      department: department || res.user.department,
+      role,
+    };
+
+    setUser(updatedUser);
+    setToken(res.token);
+    try {
+      localStorage.setItem('findit_user', JSON.stringify(updatedUser));
+      localStorage.setItem('findit_token', res.token);
+    } catch (e) {}
+
+    router.push(roleRouteMap[role]);
+    return updatedUser;
   };
 
   const quickLogin = async (role: UserRole): Promise<User> => {
     const demo = DEMO_USERS[role];
     return await login(demo.email, role);
+  };
+
+  const switchRole = async (newRole: UserRole): Promise<User> => {
+    const currentEmail = user?.email || DEMO_USERS[newRole].email;
+    return await login(currentEmail, newRole);
   };
 
   const logout = () => {
@@ -72,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('findit_user');
       localStorage.removeItem('findit_token');
     } catch (e) {}
-    router.push('/');
+    router.push('/login');
   };
 
   return (
@@ -80,9 +122,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         token,
+        isAuthenticated: Boolean(user && token),
         isLoading,
         login,
+        register,
         quickLogin,
+        switchRole,
         logout,
       }}
     >

@@ -74,32 +74,42 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
         {/* Right: Active Profile + Sign Out Button + Theme */}
         <div className="flex items-center gap-3">
-          {user && (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-apple-pill bg-white/5 border border-hairline">
-              <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-white text-[10px] font-bold">
-                {user.handle.charAt(0)}
+          {user ? (
+            <>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-apple-pill bg-white/5 border border-hairline">
+                <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-white text-[10px] font-bold">
+                  {user.handle.charAt(0)}
+                </div>
+                <div className="hidden sm:flex flex-col text-left">
+                  <span className="text-xs font-semibold text-slate-200 leading-tight">
+                    {user.handle.split(' ')[0]}
+                  </span>
+                  <span className="text-[9px] font-mono text-apple-blue font-bold uppercase tracking-wider">
+                    {user.role}
+                  </span>
+                </div>
               </div>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-semibold text-slate-200 leading-tight">
-                  {user.handle.split(' ')[0]}
-                </span>
-                <span className="text-[9px] font-mono text-apple-blue font-bold uppercase tracking-wider">
-                  {user.role}
-                </span>
-              </div>
-            </div>
-          )}
 
-          {/* Sign Out / Switch Portal Button */}
-          <button
-            onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/15 dark:bg-white/5 dark:hover:bg-white/10 border border-hairline text-slate-700 dark:text-slate-300 hover:text-white text-xs font-medium transition-all"
-            title="Sign out and return to Institutional Gatekeeper"
-          >
-            <ArrowLeftRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="hidden sm:inline">Switch Portal</span>
-            <LogOut className="w-3.5 h-3.5 ml-0.5 text-tesla-crimson" />
-          </button>
+              {/* Sign Out / Switch Portal Button */}
+              <button
+                onClick={logout}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/15 dark:bg-white/5 dark:hover:bg-white/10 border border-hairline text-slate-700 dark:text-slate-300 hover:text-white text-xs font-medium transition-all"
+                title="Sign out and return to Institutional Gatekeeper"
+              >
+                <ArrowLeftRight className="w-3.5 h-3.5 text-slate-400" />
+                <span className="hidden sm:inline">Switch Portal</span>
+                <LogOut className="w-3.5 h-3.5 ml-0.5 text-tesla-crimson" />
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-apple-pill bg-apple-blue hover:bg-apple-blue/90 text-white text-xs font-semibold shadow-sm transition-all"
+            >
+              <UserIcon className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </Link>
+          )}
 
           <ThemeToggle />
         </div>
