@@ -69,6 +69,17 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
     }, 1000);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -197,6 +208,11 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                       <Camera className="w-3.5 h-3.5 text-apple-blue" />
                       <span>Snap Photo</span>
                     </button>
+                    <label className="px-3.5 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer">
+                      <Upload className="w-3.5 h-3.5 text-telemetry-emerald" />
+                      <span>Upload Photo</span>
+                      <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                    </label>
                   </div>
                   <input
                     type="text"

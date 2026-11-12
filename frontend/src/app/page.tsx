@@ -35,7 +35,7 @@ export default function LoginPage() {
   const [selectedRole, setSelectedRole] = useState<UserRole>('STUDENT');
 
   // Form Fields
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('student@university.edu');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -273,7 +273,12 @@ export default function LoginPage() {
                     <button
                       key={rc.role}
                       type="button"
-                      onClick={() => setSelectedRole(rc.role)}
+                      onClick={() => {
+                        setSelectedRole(rc.role);
+                        if (!email || email.includes('@university.edu')) {
+                          setEmail(`${rc.role.toLowerCase()}@university.edu`);
+                        }
+                      }}
                       className={`p-2.5 rounded-apple-lg border text-left transition-all flex flex-col justify-between ${
                         isSelected
                           ? 'border-apple-blue bg-apple-blue/10 shadow-sm'
