@@ -188,7 +188,7 @@ export default function StudentDashboard() {
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setIsReportModalOpen(true)}
-              className="px-4 py-2 rounded-apple-pill bg-apple-blue hover:bg-apple-blue/90 text-white font-medium text-xs transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-medium text-xs transition-all shadow-md shadow-[#FF4A36]/20 flex items-center gap-1.5 active:scale-95"
             >
               <Search className="w-3.5 h-3.5" />
               <span>Report Lost Item</span>
@@ -197,7 +197,7 @@ export default function StudentDashboard() {
             {activePickupClaim && (
               <button
                 onClick={() => setActiveTab('HANDOVER')}
-                className="px-4 py-2 rounded-apple-pill bg-telemetry-emerald/15 hover:bg-telemetry-emerald/25 text-telemetry-emerald border border-telemetry-emerald/30 font-medium text-xs transition-all flex items-center gap-1.5"
+                className="px-4 py-2 rounded-full bg-[#00D084]/15 hover:bg-[#00D084]/25 text-[#00D084] border border-[#00D084]/30 font-medium text-xs transition-all flex items-center gap-1.5"
               >
                 <QrCode className="w-3.5 h-3.5" />
                 <span>Pickup Pass Ready</span>
@@ -210,40 +210,40 @@ export default function StudentDashboard() {
         <div className="flex items-center gap-2 border-b border-hairline pb-2">
           <button
             onClick={() => setActiveTab('CATALOG')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
               activeTab === 'CATALOG'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            Campus Discovery Catalog ({items.length})
+            All Items ({items.length})
           </button>
 
           <button
             onClick={() => setActiveTab('MY_CLAIMS')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'MY_CLAIMS'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <span>My Submitted Claims</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-apple-pill bg-black/10 dark:bg-white/10 font-bold">
+            <span>My Claims</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-[#FF4A36]/15 text-[#FF4A36] font-bold">
               {claims.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveTab('HANDOVER')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'HANDOVER'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <span>Locker Pickup Pass</span>
+            <span>Locker Pass</span>
             {approvedClaims.length > 0 && (
-              <span className="w-2 h-2 rounded-full bg-telemetry-emerald animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#00D084] animate-pulse" />
             )}
           </button>
         </div>

@@ -247,52 +247,52 @@ export default function SecurityDashboard() {
         <div className="flex items-center gap-2 border-b border-hairline pb-2 flex-wrap">
           <button
             onClick={() => setActiveTab('CLAIMS_QUEUE')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'CLAIMS_QUEUE'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <ShieldAlert className="w-3.5 h-3.5" />
+            <ShieldAlert className="w-3.5 h-3.5 text-[#FF4A36]" />
             <span>Review Claims ({claims.length})</span>
             {claims.some((c) => c.status === 'PENDING') && (
-              <span className="w-2 h-2 rounded-full bg-tesla-crimson animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#FF4A36] animate-pulse" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('HANDOVER_SCANNER')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'HANDOVER_SCANNER'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Scan className="w-3.5 h-3.5" />
+            <Scan className="w-3.5 h-3.5 text-[#3B82F6]" />
             <span>Handover Scanner</span>
           </button>
 
           <button
             onClick={() => setActiveTab('VAULT_GRID')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'VAULT_GRID'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Lock className="w-3.5 h-3.5" />
+            <Lock className="w-3.5 h-3.5 text-[#FBE74E]" />
             <span>Smart Lockers</span>
           </button>
 
           <button
             onClick={() => setActiveTab('UNMASKED_INVENTORY')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'UNMASKED_INVENTORY'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-3.5 h-3.5 text-[#00D084]" />
             <span>Depot Inventory</span>
           </button>
         </div>

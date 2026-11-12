@@ -147,7 +147,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleExportCsv}
-              className="px-4 py-2 rounded-apple-pill bg-slate-900 dark:bg-white text-white dark:text-black font-medium text-xs hover:opacity-90 transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-medium text-xs transition-all shadow-md shadow-[#FF4A36]/20 flex items-center gap-1.5 active:scale-95"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export Audit CSV</span>
@@ -159,49 +159,49 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-2 border-b border-hairline pb-2 flex-wrap">
           <button
             onClick={() => setActiveTab('OVERVIEW')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'OVERVIEW'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5" />
+            <BarChart3 className="w-3.5 h-3.5 text-[#3B82F6]" />
             <span>Overview</span>
           </button>
 
           <button
             onClick={() => setActiveTab('HEATMAP')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'HEATMAP'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Flame className="w-3.5 h-3.5" />
+            <Flame className="w-3.5 h-3.5 text-[#FF4A36]" />
             <span>Campus Heatmap</span>
           </button>
 
           <button
             onClick={() => setActiveTab('LIFECYCLE_POLICIES')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'LIFECYCLE_POLICIES'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
+            <Layers className="w-3.5 h-3.5 text-[#FBE74E]" />
             <span>Retention Policies</span>
           </button>
 
           <button
             onClick={() => setActiveTab('AUDIT_LOGS')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'AUDIT_LOGS'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <FileSpreadsheet className="w-3.5 h-3.5 text-[#00D084]" />
             <span>Audit Log ({items.length})</span>
           </button>
         </div>

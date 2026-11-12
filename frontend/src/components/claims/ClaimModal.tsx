@@ -59,7 +59,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-lg rounded-apple-2xl studio-surface border border-hairline p-6 sm:p-8 shadow-2xl my-8"
+          className="relative w-full max-w-lg rounded-[28px] bg-[#1E1F30] border border-[#2F314C] p-6 sm:p-8 shadow-2xl my-8"
         >
           <button
             onClick={onClose}
@@ -70,7 +70,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
           {/* Header */}
           <div className="mb-5">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-apple-blue font-bold block mb-1">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4A36] font-bold block mb-1">
               ANTI-FRAUD GUARD
             </span>
             <h2 className="text-xl font-bold tracking-tight text-white">
@@ -82,11 +82,11 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
           </div>
 
           {/* Item Preview */}
-          <div className="p-3 rounded-apple-md apple-glass flex items-center gap-3 mb-5">
+          <div className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center gap-3 mb-5">
             <img
               src={targetItem.imageUrl}
               alt={targetItem.title}
-              className="w-12 h-12 rounded-apple-sm object-cover"
+              className="w-12 h-12 rounded-xl object-cover"
             />
             <div className="truncate">
               <span className="text-xs font-semibold text-white block truncate">
@@ -101,7 +101,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-[10px] uppercase font-mono text-slate-300 font-semibold block mb-1.5 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-tesla-crimson" />
+                <Lock className="w-3.5 h-3.5 text-[#FF4A36]" />
                 <span>Private Distinguishing Marks / Interior Traits</span>
               </label>
               <textarea
@@ -110,13 +110,13 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
                 value={secretAnswer}
                 onChange={(e) => setSecretAnswer(e.target.value)}
                 placeholder="e.g. Lock screen photo, specific scratch on right corner, cash denominations inside..."
-                className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs font-mono placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
               />
             </div>
 
             <div>
               <label className="text-[10px] uppercase font-mono text-slate-300 font-semibold block mb-1.5 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-apple-blue" />
+                <FileText className="w-3.5 h-3.5 text-[#00D084]" />
                 <span>Proof of Ownership Image URL</span>
               </label>
               <input
@@ -124,11 +124,11 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
                 value={proofImageUrl}
                 onChange={(e) => setProofImageUrl(e.target.value)}
                 placeholder="Paste URL to purchase invoice or photo with item..."
-                className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
               />
             </div>
 
-            <div className="p-3 rounded-apple-md bg-black/60 border border-hairline flex items-start gap-2.5 text-[11px] text-slate-400">
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-start gap-2.5 text-[11px] text-slate-400">
               <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
               <span>
                 Claims are logged with institutional student telemetry. False claims are reviewed by Campus Security.
@@ -138,9 +138,9 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-apple-pill bg-white text-black font-semibold text-xs sm:text-sm hover:bg-slate-200 transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-semibold text-xs sm:text-sm transition-all active:scale-95 shadow-md shadow-[#FF4A36]/25 flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-4 h-4 text-apple-blue" />
+              <Sparkles className="w-4 h-4 text-white" />
               <span>{isSubmitting ? 'Verifying with Anti-Fraud Guard...' : 'Submit Claim to Security'}</span>
             </button>
           </form>

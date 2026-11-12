@@ -149,9 +149,12 @@ export default function LoginPage() {
       <header className="w-full h-14 apple-header px-4 sm:px-8 flex items-center justify-between border-b border-hairline">
         <div className="max-w-6xl w-full mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-semibold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-[#FF4A36] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+              <span className="w-2 h-2 rounded-full bg-white" />
+            </div>
+            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
               <span>FindIt</span>
-              <span className="text-apple-blue font-bold">Campus</span>
+              <span className="text-slate-400 font-normal text-xs ml-0.5">Campus</span>
             </span>
           </Link>
 
@@ -165,34 +168,34 @@ export default function LoginPage() {
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left Intro Column (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-apple-pill bg-black/5 dark:bg-white/5 border border-hairline text-xs font-medium text-apple-blue">
-            <ShieldCheck className="w-4 h-4 text-apple-blue" />
-            <span>Campus Lost &amp; Found Network</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4A36]/10 border border-[#FF4A36]/20 text-xs font-semibold text-[#FF4A36]">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Campus Lost &amp; Found Reimagined</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
-            Find what's lost on campus.
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.08]">
+            Everything lost, <span className="text-[#FF4A36]">found</span> together.
           </h1>
 
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
-            A fast, private platform to report missing belongings, log items you've found, and coordinate contactless locker pickups.
+            The modern lost and found app built for university life. Replace chaotic lost posts and manual depot sheets with unified, private recovery.
           </p>
 
           <div className="space-y-3 pt-2">
             <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
-              <div className="w-6 h-6 rounded-full bg-apple-blue/10 text-apple-blue flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <div className="w-5 h-5 rounded-full bg-[#FF4A36] text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0">
                 ✓
               </div>
-              <span>One unified portal for students, finders, security, and staff</span>
+              <span>One unified workspace for students, finders, security, and staff</span>
             </div>
             <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
-              <div className="w-6 h-6 rounded-full bg-telemetry-emerald/10 text-telemetry-emerald flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <div className="w-5 h-5 rounded-full bg-[#FBE74E] text-black flex items-center justify-center font-bold text-[10px] flex-shrink-0">
                 ✓
               </div>
               <span>Live camera product scanning &amp; contactless smart lockers</span>
             </div>
             <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
-              <div className="w-6 h-6 rounded-full bg-tesla-amber/10 text-tesla-amber flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <div className="w-5 h-5 rounded-full bg-[#00D084] text-black flex items-center justify-center font-bold text-[10px] flex-shrink-0">
                 ✓
               </div>
               <span>Private zero-exposure verification with QR &amp; OTP pickup passes</span>
@@ -202,18 +205,18 @@ export default function LoginPage() {
 
         {/* Right Universal Auth Card (7 Cols) */}
         <div className="lg:col-span-7">
-          <div className="w-full max-w-lg mx-auto rounded-apple-2xl studio-surface border border-hairline p-6 sm:p-8 shadow-xl relative overflow-hidden">
+          <div className="w-full max-w-lg mx-auto rounded-[28px] studio-surface border border-hairline p-6 sm:p-8 shadow-xl relative overflow-hidden">
             {/* Segmented Auth Mode Switcher */}
-            <div className="flex p-1 rounded-apple-pill bg-black/5 dark:bg-white/5 border border-hairline mb-5">
+            <div className="flex p-1 rounded-full bg-black/5 dark:bg-white/5 border border-hairline mb-5">
               <button
                 type="button"
                 onClick={() => {
                   setAuthMode('LOGIN');
                   setErrorMessage(null);
                 }}
-                className={`flex-1 py-1.5 rounded-apple-pill text-xs font-semibold transition-all ${
+                className={`flex-1 py-1.5 rounded-full text-xs font-semibold transition-all ${
                   authMode === 'LOGIN'
-                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                    ? 'bg-white dark:bg-[#26283D] text-slate-900 dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -226,9 +229,9 @@ export default function LoginPage() {
                   setAuthMode('REGISTER');
                   setErrorMessage(null);
                 }}
-                className={`flex-1 py-1.5 rounded-apple-pill text-xs font-semibold transition-all ${
+                className={`flex-1 py-1.5 rounded-full text-xs font-semibold transition-all ${
                   authMode === 'REGISTER'
-                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                    ? 'bg-white dark:bg-[#26283D] text-slate-900 dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -372,7 +375,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-2.5 rounded-apple-pill bg-slate-900 dark:bg-white text-white dark:text-black font-semibold text-xs sm:text-sm hover:opacity-90 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-1.5"
+                className="w-full py-3 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-semibold text-xs sm:text-sm shadow-md shadow-[#FF4A36]/25 hover:shadow-lg hover:shadow-[#FF4A36]/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 <span>
                   {isSubmitting
@@ -391,7 +394,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleQuickDemo(selectedRole)}
                 disabled={isSubmitting}
-                className="w-full py-2 rounded-apple-pill bg-apple-blue/10 hover:bg-apple-blue/15 text-apple-blue border border-apple-blue/20 text-xs font-medium transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-full bg-[#FF4A36]/10 hover:bg-[#FF4A36]/15 text-[#FF4A36] border border-[#FF4A36]/20 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Instant Demo Login as {selectedRole}</span>
@@ -401,7 +404,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleSimulateSso}
                 disabled={ssoLoading}
-                className="w-full py-2 rounded-apple-pill bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-hairline text-xs font-medium text-slate-700 dark:text-slate-300 transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-hairline text-xs font-medium text-slate-700 dark:text-slate-300 transition-all flex items-center justify-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{ssoLoading ? 'Connecting to University SSO...' : 'University SSO Sign In'}</span>

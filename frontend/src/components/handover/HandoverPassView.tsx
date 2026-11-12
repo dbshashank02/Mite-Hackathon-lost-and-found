@@ -148,11 +148,11 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         {/* Apple Wallet-Style Pass Card */}
-        <div className="relative rounded-apple-2xl studio-surface border border-white/20 p-6 sm:p-8 flex flex-col items-center text-center shadow-apple-glass overflow-hidden">
+        <div className="relative rounded-[28px] bg-[#1E1F30] border border-[#2F314C] p-6 sm:p-8 flex flex-col items-center text-center shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center gap-2 mb-3">
-            <ShieldCheck className="w-4 h-4 text-telemetry-emerald" />
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-telemetry-emerald">
+            <ShieldCheck className="w-4 h-4 text-[#00D084]" />
+            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-[#00D084]">
               CAMPUS SECURITY GATEPASS
             </span>
           </div>
@@ -165,7 +165,7 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
           </p>
 
           {/* Precision QR Code Container */}
-          <div className="p-4 rounded-apple-xl bg-white shadow-2xl mb-6">
+          <div className="p-4 rounded-2xl bg-white shadow-2xl mb-6">
             <QRCodeSVG
               value={currentClaim?.qrToken || 'FINDIT-CAMPUS-PASS-2026'}
               size={170}
@@ -183,41 +183,41 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
               {(currentClaim?.otpCode || '849201').split('').map((digit, i) => (
                 <div
                   key={i}
-                  className="w-10 h-12 rounded-apple-sm bg-black/60 border border-hairline flex items-center justify-center text-xl font-mono font-bold text-white tabular-numbers shadow-inner"
+                  className="w-10 h-12 rounded-xl bg-black/60 border border-white/10 flex items-center justify-center text-xl font-mono font-bold text-white tabular-numbers shadow-inner"
                 >
                   {digit}
                 </div>
               ))}
               <button
                 onClick={handleCopyOtp}
-                className="p-2.5 rounded-apple-sm bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-all ml-1"
+                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-all ml-1"
                 title="Copy OTP"
               >
-                {copied ? <Check className="w-4 h-4 text-telemetry-emerald" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-[#00D084]" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
           {/* Ticking Countdown Timer */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-apple-pill bg-white/5 border border-hairline text-amber-400 text-xs font-mono mb-4">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-400 text-xs font-mono mb-4">
             <Clock className="w-3.5 h-3.5 animate-pulse" />
             <span className="tabular-numbers">Expires in: {formatTime(timeLeft)}</span>
           </div>
 
           {/* Vault Locker Allocation */}
-          <div className="w-full p-3 rounded-apple-md bg-black/50 border border-hairline flex items-center justify-between text-xs">
+          <div className="w-full p-3 rounded-xl bg-black/50 border border-white/10 flex items-center justify-between text-xs">
             <span className="text-slate-400">Vault Location:</span>
-            <span className="font-mono font-bold text-telemetry-emerald">
+            <span className="font-mono font-bold text-[#00D084]">
               {currentItem?.lockerId || 'DEPOT-LK-14B'}
             </span>
           </div>
         </div>
 
         {/* Security Terminal Handover Station */}
-        <div className="p-6 sm:p-8 rounded-apple-2xl studio-surface border border-hairline space-y-6 shadow-2xl">
+        <div className="p-6 sm:p-8 rounded-[28px] bg-[#1E1F30] border border-[#2F314C] space-y-6 shadow-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-apple-md bg-white/10 flex items-center justify-center border border-hairline">
-              <KeyRound className="w-5 h-5 text-apple-blue" />
+            <div className="w-10 h-10 rounded-xl bg-[#FF4A36]/10 flex items-center justify-center border border-[#FF4A36]/20">
+              <KeyRound className="w-5 h-5 text-[#FF4A36]" />
             </div>
             <div>
               <h3 className="text-base font-bold text-white">
@@ -230,7 +230,7 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
           </div>
 
           {/* 1-Tap Scanner Shortcut */}
-          <div className="p-4 rounded-apple-xl bg-black/50 border border-hairline space-y-3">
+          <div className="p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
             <span className="text-xs font-bold text-white block">
               Optical Barcode Scanner Simulation
             </span>
@@ -241,9 +241,9 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
               type="button"
               onClick={handleInstantScanVerify}
               disabled={verifying}
-              className="w-full py-2.5 px-4 rounded-apple-pill bg-white text-black font-semibold text-xs hover:bg-slate-200 transition-all flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-2.5 px-4 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-[#FF4A36]/25"
             >
-              <Sparkles className="w-4 h-4 text-apple-blue" />
+              <Sparkles className="w-4 h-4 text-white" />
               <span>{verifying ? 'Verifying with Vault...' : 'Scan Pass & Confirm Handover'}</span>
             </button>
           </div>
@@ -259,12 +259,12 @@ export const HandoverPassView: React.FC<HandoverPassViewProps> = ({
               value={manualOtp}
               onChange={(e) => setManualOtp(e.target.value)}
               placeholder="e.g. 849201"
-              className="w-full px-4 py-2.5 rounded-apple-md bg-black/60 border border-hairline text-white font-mono text-center tracking-widest text-lg focus:outline-none focus:border-apple-blue"
+              className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 text-white font-mono text-center tracking-widest text-lg focus:outline-none focus:border-[#FF4A36]"
             />
             <button
               type="submit"
               disabled={verifying || !manualOtp}
-              className="w-full py-2.5 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-all border border-hairline disabled:opacity-40"
+              className="w-full py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-all border border-white/10 disabled:opacity-40"
             >
               Verify OTP
             </button>

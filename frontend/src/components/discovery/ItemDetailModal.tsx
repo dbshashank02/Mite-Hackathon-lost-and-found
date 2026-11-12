@@ -45,12 +45,12 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-2xl rounded-apple-2xl studio-surface border border-hairline overflow-hidden shadow-2xl my-8"
+          className="relative w-full max-w-2xl rounded-[28px] bg-[#1E1F30] border border-[#2F314C] overflow-hidden shadow-2xl my-8"
         >
           {/* Close Pill */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 z-20 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-hairline flex items-center justify-center transition-all"
+            className="absolute top-5 right-5 z-20 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/10 flex items-center justify-center transition-all"
           >
             <X className="w-4 h-4" />
           </button>
@@ -62,19 +62,19 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               alt={item.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1E1F30] via-black/40 to-transparent" />
 
             <div className="absolute top-5 left-5 flex items-center gap-2">
               <span
-                className={`px-3 py-1 rounded-apple-pill text-xs font-mono font-bold uppercase tracking-wider ${
+                className={`px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider ${
                   item.type === 'LOST'
-                    ? 'bg-tesla-crimson text-white'
-                    : 'bg-telemetry-emerald text-black'
+                    ? 'bg-[#FF4A36] text-white'
+                    : 'bg-[#00D084] text-black'
                 }`}
               >
                 {item.type}
               </span>
-              <span className="px-3 py-1 rounded-apple-pill text-xs font-mono text-slate-300 bg-black/60 backdrop-blur-md border border-hairline">
+              <span className="px-3 py-1 rounded-full text-xs font-mono text-slate-300 bg-black/60 backdrop-blur-md border border-white/10">
                 {item.category}
               </span>
             </div>
@@ -180,16 +180,16 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             </div>
 
             {/* Actions Bar */}
-            <div className="pt-4 border-t border-hairline flex flex-wrap items-center gap-3">
+            <div className="pt-4 border-t border-white/10 flex flex-wrap items-center gap-3">
               {item.type === 'FOUND' && (
                 <button
                   onClick={() => {
                     onClose();
                     onOpenClaim(item);
                   }}
-                  className="flex-1 py-3 px-5 rounded-apple-pill bg-white text-black font-semibold text-xs hover:bg-slate-200 transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-5 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-semibold text-xs transition-all active:scale-95 shadow-md shadow-[#FF4A36]/25 flex items-center justify-center gap-2"
                 >
-                  <ShieldCheck className="w-4 h-4 text-apple-blue" />
+                  <ShieldCheck className="w-4 h-4" />
                   <span>Claim Item</span>
                 </button>
               )}
@@ -199,10 +199,10 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   onClose();
                   onOpenMatch(item);
                 }}
-                className="flex-1 py-3 px-5 rounded-apple-pill bg-apple-blue hover:bg-apple-blueHover text-white font-semibold text-xs transition-all active:scale-95 shadow-apple-blue-glow flex items-center justify-center gap-2"
+                className="flex-1 py-3 px-5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/10 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
-                <Sparkles className="w-4 h-4" />
-                <span>AI Match Telemetry</span>
+                <Sparkles className="w-4 h-4 text-[#FBE74E]" />
+                <span>AI Match</span>
               </button>
 
               <button
@@ -210,7 +210,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   onClose();
                   onOpenChat(item);
                 }}
-                className="py-3 px-4 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-hairline transition-all active:scale-95 flex items-center gap-1.5"
+                className="py-3 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/10 transition-all active:scale-95 flex items-center gap-1.5"
               >
                 <MessageSquare className="w-4 h-4 text-slate-300" />
                 <span>Relay Chat</span>

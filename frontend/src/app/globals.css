@@ -3,23 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #F5F5F7;
+  --bg-primary: #F7F6F2;
   --bg-secondary: #FFFFFF;
-  --text-primary: #1D1D1F;
-  --text-secondary: #86868B;
+  --text-primary: #141522;
+  --text-secondary: #6B6D7C;
   --hairline-border: rgba(0, 0, 0, 0.08);
-  --card-bg: rgba(255, 255, 255, 0.72);
-  --glass-header: rgba(245, 245, 247, 0.82);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --glass-header: rgba(247, 246, 242, 0.88);
 }
 
 .dark {
-  --bg-primary: #000000;
-  --bg-secondary: #0A0A0C;
-  --text-primary: #F5F5F7;
-  --text-secondary: #86868B;
-  --hairline-border: rgba(255, 255, 255, 0.1);
-  --card-bg: rgba(18, 18, 22, 0.65);
-  --glass-header: rgba(10, 10, 12, 0.8);
+  --bg-primary: #141522;
+  --bg-secondary: #1E1F30;
+  --text-primary: #F7F8FC;
+  --text-secondary: #8E91A5;
+  --hairline-border: rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(30, 31, 48, 0.75);
+  --glass-header: rgba(20, 21, 34, 0.88);
 }
 
 body {
@@ -31,44 +31,46 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background-color: #FF4A36;
+  color: #FFFFFF;
+}
+
 .tabular-numbers {
   font-variant-numeric: tabular-nums;
 }
 
-/* Apple Frosted Glass with Saturation */
+/* Superlist Glass with Saturation */
 .apple-glass {
   background: var(--card-bg);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--hairline-border);
 }
 
 .apple-header {
   background: var(--glass-header);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--hairline-border);
 }
 
 .apple-dock {
-  background: rgba(10, 10, 12, 0.85);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(30, 31, 48, 0.88);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .light .apple-dock {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* Apple-grade studio surface */
+/* Superlist tactile card surface */
 .studio-surface {
-  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0) 70%), var(--bg-secondary);
-}
-
-.light .studio-surface {
-  background: radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0) 70%), var(--bg-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--hairline-border);
 }
 
 /* Hairline borders */

@@ -9,6 +9,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        superlist: {
+          red: '#FF4A36',
+          coral: '#FF5C47',
+          dark: '#141522',
+          surfaceDark: '#1E1F30',
+          surfaceDarkHover: '#26283D',
+          borderDark: '#2F314C',
+          light: '#F7F6F2',
+          surfaceLight: '#FFFFFF',
+          borderLight: '#E8E8E3',
+          yellow: '#FBE74E',
+          magenta: '#F866DB',
+          mint: '#00D084',
+          blue: '#3B82F6',
+        },
         obsidian: {
           950: '#000000',
           900: '#0A0A0C',
@@ -83,4 +98,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};

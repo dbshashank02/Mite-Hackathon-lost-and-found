@@ -27,17 +27,20 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
     <header className="sticky top-0 z-50 w-full h-14 apple-header px-4 sm:px-8 flex items-center justify-between border-b border-hairline transition-colors">
       <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
         {/* Left: Brand + Depot Status Pulse */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-semibold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-[#FF4A36] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+              <span className="w-2 h-2 rounded-full bg-white" />
+            </div>
+            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
               <span>FindIt</span>
-              <span className="text-apple-blue font-bold">Campus</span>
+              <span className="text-slate-400 font-normal text-xs ml-0.5">Campus</span>
             </span>
           </Link>
 
           {activeRoleTitle && (
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-apple-pill bg-black/5 dark:bg-white/5 border border-hairline text-xs text-slate-500 dark:text-slate-400 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue" />
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF4A36]/10 text-[#FF4A36] border border-[#FF4A36]/20 text-[11px] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF4A36]" />
               <span>{activeRoleTitle}</span>
             </div>
           )}
@@ -47,8 +50,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         <div className="flex items-center gap-2.5">
           {user ? (
             <>
-              <div className="flex items-center gap-2 px-2.5 py-1 rounded-apple-pill bg-black/5 dark:bg-white/5 border border-hairline">
-                <div className="w-5 h-5 rounded-full bg-apple-blue/15 text-apple-blue flex items-center justify-center text-[10px] font-bold">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-hairline">
+                <div className="w-5 h-5 rounded-full bg-[#FF4A36]/20 text-[#FF4A36] flex items-center justify-center text-[10px] font-bold">
                   {user.handle.charAt(0)}
                 </div>
                 <span className="text-xs font-medium text-slate-700 dark:text-slate-200">

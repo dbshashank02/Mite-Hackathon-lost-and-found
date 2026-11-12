@@ -285,40 +285,40 @@ export default function FinderDashboard() {
         <div className="flex items-center gap-2 border-b border-hairline pb-2">
           <button
             onClick={() => setActiveTab('FAST_LOG')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'FAST_LOG'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Camera className="w-3.5 h-3.5" />
+            <Camera className="w-3.5 h-3.5 text-[#FF4A36]" />
             <span>Scan &amp; Log</span>
           </button>
 
           <button
             onClick={() => setActiveTab('DEPOT_PASS')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'DEPOT_PASS'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Lock className="w-3.5 h-3.5" />
+            <Lock className="w-3.5 h-3.5 text-[#FBE74E]" />
             <span>Locker Drop-Off</span>
             {depositPass && depositPass.status !== 'DEPOSITED' && (
-              <span className="w-2 h-2 rounded-full bg-telemetry-emerald animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#00D084] animate-pulse" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('CONTRIBUTIONS')}
-            className={`px-4 py-2 rounded-apple-pill text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
               activeTab === 'CONTRIBUTIONS'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-black shadow-sm'
+                ? 'bg-white dark:bg-[#1E1F30] text-slate-900 dark:text-white border border-hairline shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <HeartHandshake className="w-3.5 h-3.5" />
+            <HeartHandshake className="w-3.5 h-3.5 text-[#F866DB]" />
             <span>My Items ({myLoggedItems.length})</span>
           </button>
         </div>
@@ -530,7 +530,7 @@ export default function FinderDashboard() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-apple-pill bg-telemetry-emerald hover:bg-telemetry-emerald/90 text-black font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-semibold text-xs sm:text-sm shadow-md shadow-[#FF4A36]/20 transition-all flex items-center justify-center gap-2"
               >
                 <span>{isSubmitting ? 'Indexing Item...' : 'Log Found Item & Issue Locker Pass'}</span>
                 <ArrowRight className="w-4 h-4" />

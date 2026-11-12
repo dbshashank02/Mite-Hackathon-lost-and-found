@@ -124,7 +124,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-xl rounded-apple-2xl studio-surface border border-hairline p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
+          className="relative w-full max-w-xl rounded-[28px] bg-[#1E1F30] border border-[#2F314C] p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
         >
           {/* Close Pill */}
           <button
@@ -136,7 +136,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
 
           {/* Header */}
           <div className="mb-6">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-apple-blue font-bold block mb-1">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4A36] font-bold block mb-1">
               FAST-LOG TELEMETRY
             </span>
             <h2 className="text-2xl font-bold tracking-tight text-white">
@@ -153,13 +153,13 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
               <label className="text-[10px] uppercase font-mono text-slate-400 block mb-1.5">
                 Catalog Direction
               </label>
-              <div className="grid grid-cols-2 p-1 rounded-apple-pill bg-black/50 border border-hairline">
+              <div className="grid grid-cols-2 p-1 rounded-full bg-black/50 border border-white/10">
                 <button
                   type="button"
                   onClick={() => setType('LOST')}
-                  className={`py-2 rounded-apple-pill text-xs font-semibold transition-all ${
+                  className={`py-2 rounded-full text-xs font-semibold transition-all ${
                     type === 'LOST'
-                      ? 'bg-tesla-crimson text-white shadow-sm'
+                      ? 'bg-[#FF4A36] text-white shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -168,9 +168,9 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setType('FOUND')}
-                  className={`py-2 rounded-apple-pill text-xs font-semibold transition-all ${
+                  className={`py-2 rounded-full text-xs font-semibold transition-all ${
                     type === 'FOUND'
-                      ? 'bg-telemetry-emerald text-black font-bold shadow-sm'
+                      ? 'bg-[#00D084] text-black font-bold shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -184,15 +184,15 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
               <label className="text-[10px] uppercase font-mono text-slate-400 block">
                 Visual Capture
               </label>
-              <div className="p-4 rounded-apple-xl bg-black/50 border border-dashed border-hairline flex items-center gap-4">
-                <div className="relative w-20 h-20 rounded-apple-md overflow-hidden bg-slate-900 border border-hairline flex-shrink-0">
+              <div className="p-4 rounded-2xl bg-black/50 border border-dashed border-white/10 flex items-center gap-4">
+                <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-slate-900 border border-white/10 flex-shrink-0">
                   <img
                     src={imageUrl}
                     alt="Preview"
                     className="w-full h-full object-cover"
                   />
                   {fastLogCameraActive && (
-                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-[10px] font-mono text-apple-blue">
+                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-[10px] font-mono text-[#FF4A36]">
                       Calibrating...
                     </div>
                   )}
@@ -203,13 +203,13 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                     <button
                       type="button"
                       onClick={handleSimulateFastCapture}
-                      className="px-3.5 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all"
+                      className="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all"
                     >
-                      <Camera className="w-3.5 h-3.5 text-apple-blue" />
+                      <Camera className="w-3.5 h-3.5 text-[#FF4A36]" />
                       <span>Snap Photo</span>
                     </button>
-                    <label className="px-3.5 py-1.5 rounded-apple-pill bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer">
-                      <Upload className="w-3.5 h-3.5 text-telemetry-emerald" />
+                    <label className="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer">
+                      <Upload className="w-3.5 h-3.5 text-[#00D084]" />
                       <span>Upload Photo</span>
                       <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
                     </label>
@@ -219,7 +219,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     placeholder="Or paste image URL..."
-                    className="w-full px-3 py-1.5 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                    className="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
                   />
                 </div>
               </div>
@@ -237,7 +237,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. MacBook Pro 14, Bifold Wallet"
-                  className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
                 />
               </div>
 
@@ -248,7 +248,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as ItemCategory)}
-                  className="w-full px-3.5 py-2 rounded-apple-md bg-[#111114] border border-hairline text-white text-xs focus:outline-none focus:border-apple-blue"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#141522] border border-white/10 text-white text-xs focus:outline-none focus:border-[#FF4A36]"
                 >
                   {categories.map((c) => (
                     <option key={c} value={c}>
@@ -270,7 +270,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                   placeholder="Apple, Sony, Bellroy"
-                  className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
                 />
               </div>
 
@@ -283,7 +283,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
                   placeholder="Space Gray, Black, Tan"
-                  className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
                 />
               </div>
 
@@ -294,7 +294,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                 <select
                   value={buildingId}
                   onChange={(e) => setBuildingId(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-apple-md bg-[#111114] border border-hairline text-white text-xs focus:outline-none focus:border-apple-blue"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#141522] border border-white/10 text-white text-xs focus:outline-none focus:border-[#FF4A36]"
                 >
                   {CAMPUS_BUILDINGS.map((b) => (
                     <option key={b.id} value={b.id}>
@@ -306,13 +306,13 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
             </div>
 
             {/* Dedicated Encrypted "Private Distinctive Traits" Box */}
-            <div className="p-4 rounded-apple-xl bg-black/70 border border-hairline space-y-2">
+            <div className="p-4 rounded-2xl bg-black/50 border border-white/10 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-tesla-crimson" />
+                  <Lock className="w-3.5 h-3.5 text-[#FF4A36]" />
                   <span>Private Distinctive Traits (Zero-Exposure Shield)</span>
                 </span>
-                <span className="text-[9px] font-mono text-telemetry-emerald">
+                <span className="text-[9px] font-mono text-[#00D084]">
                   ENCRYPTED AT REST
                 </span>
               </div>
@@ -325,7 +325,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                 value={privateTraits}
                 onChange={(e) => setPrivateTraits(e.target.value)}
                 placeholder="e.g. Holographic GitHub sticker on lid, minor scratch on left bezel..."
-                className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white text-xs font-mono placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-mono placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
               />
             </div>
 
@@ -339,7 +339,7 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
                 value={serialNumber}
                 onChange={(e) => setSerialNumber(e.target.value)}
                 placeholder="e.g. C02G4050MD6M"
-                className="w-full px-3.5 py-2 rounded-apple-md bg-white/5 border border-hairline text-white font-mono text-xs placeholder:text-slate-600 focus:outline-none focus:border-apple-blue"
+                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-xs placeholder:text-slate-600 focus:outline-none focus:border-[#FF4A36]"
               />
             </div>
 
@@ -347,9 +347,9 @@ export const ReportItemModal: React.FC<ReportItemModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-apple-pill bg-white text-black font-semibold text-xs sm:text-sm hover:bg-slate-200 transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-full bg-[#FF4A36] hover:bg-[#FF5C47] text-white font-semibold text-xs sm:text-sm transition-all active:scale-95 shadow-md shadow-[#FF4A36]/25 flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-4 h-4 text-apple-blue" />
+              <Sparkles className="w-4 h-4 text-white" />
               <span>{isSubmitting ? 'Registering...' : 'Register Item to Campus Depot'}</span>
             </button>
           </form>
